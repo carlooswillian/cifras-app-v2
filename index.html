@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#08090d">
-<title>Cifra Inteligente V2</title>
+<title>Cifra Inteligente V2.1</title>
 <style>
 :root{color-scheme:dark;--bg:#08090d;--panel:#12141b;--panel2:#191c25;--line:#292d39;--text:#f5f6fb;--muted:#9ba2b3;--blue:#78a7ff;--purple:#b6a0ff;--green:#80dfb0;--danger:#ff8e9a;--radius:20px}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#171b2a 0,var(--bg) 50%);color:var(--text);font:15px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;min-height:100vh}
@@ -71,13 +71,19 @@ input,textarea,select{width:100%;background:#0c0e14;color:var(--text);border:1px
         
         <div class="form-grid">
           
-          <!-- NOVO: Bloco de Importação do Cifra Club -->
+          <!-- NOVO: Bloco de Busca de Opções + Importação do Cifra Club -->
           <div class="field span2" style="background: var(--panel2); padding: 18px; border-radius: 12px; border: 1px solid #3e5e99; margin-bottom: 12px;">
-            <label for="cifraSearch" style="color: var(--blue); font-size: 13px;">☁️ Busca Inteligente (Cifra Club)</label>
+            <label for="cifraSearch" style="color: var(--blue); font-size: 13px;">☁️ Busca Inteligente (Trecho de Letra, Artista ou Música)</label>
             <div style="display:flex; gap:8px; margin-top:6px; align-items:center; flex-wrap:wrap;">
-                <input id="cifraSearch" placeholder="Ex: Gabriela Rocha - Toda Terra ou cole a URL" style="flex: 1; min-width: 200px;">
-                <button id="btnFetchCifra" style="background: var(--blue); color: #08090d; padding: 12px 18px;">Buscar e Preencher</button>
+                <input id="cifraSearch" placeholder="Ex: Pra onde eu irei... ou cole a URL" style="flex: 1; min-width: 200px;" onkeydown="if(event.key === 'Enter') document.getElementById('btnSearchOptions').click()">
+                <button id="btnSearchOptions" style="background: var(--panel); color: var(--blue); border: 1px solid var(--blue); padding: 12px 18px;" title="Lista opções disponíveis">🔎 Buscar Opções</button>
+                <button id="btnFetchCifra" style="background: var(--blue); color: #08090d; padding: 12px 18px;" title="Extrai diretamente se já tiver o nome ou URL correto">Extrair Direto</button>
             </div>
+            
+            <!-- Modal Interno para exibir os Resultados -->
+            <div id="searchResults" style="display:none; margin-top: 12px; background: #12141b; border: 1px solid var(--line); border-radius: 8px; max-height: 250px; overflow-y: auto;">
+            </div>
+
             <div id="cifraSearchStatus" class="status small"></div>
           </div>
 
@@ -101,7 +107,7 @@ input,textarea,select{width:100%;background:#0c0e14;color:var(--text);border:1px
       </section>
     </main>
   </div>
-  <div class="footer">CIFRA INTELIGENTE · MVP V2.0.0 · Importação Direta do Cifra Club</div>
+  <div class="footer">CIFRA INTELIGENTE · MVP V2.1.0 · Busca Integrada de Letras e Cifras</div>
 </div>
 <script>
 /*
@@ -142,15 +148,64 @@ async function api(action, data={}) {
 function notify(el, msg, error=false) { el.textContent=msg; el.style.color=error?'var(--danger)':'var(--green)'; }
 function openEditor() { $('editor').classList.remove('hidden'); $('viewer').classList.add('hidden');$('editorStatus').textContent=''; window.scrollTo({top:0,behavior:'smooth'}); }
 function closeEditor() { $('editor').classList.add('hidden');$('viewer').classList.remove('hidden'); }
-function resetEditor() { ['cifraSearch','title','artist','key','capo','raw','notes'].forEach(id=>$(id).value='');$('preview').classList.add('hidden'); $('cifraSearchStatus').textContent='';}
+function resetEditor() { ['cifraSearch','title','artist','key','capo','raw','notes'].forEach(id=>$(id).value='');$('preview').classList.add('hidden'); $('cifraSearchStatus').textContent=''; $('searchResults').style.display='none';}
 
-// LÓGICA DE BUSCA DO CIFRA CLUB
+// -------------------------------------------------------------
+// FUNÇÕES DE BUSCA E INTEGRAÇÃO
+// -------------------------------------------------------------
+
+// 1. Busca Opções de Músicas (Pela Letra, Artista, Nome)
+$('btnSearchOptions').onclick = async () => {
+    const query = $('cifraSearch').value.trim();
+    if(!query) return;
+    const status = $('cifraSearchStatus');
+    const resultsDiv = $('searchResults');
+    
+    status.style.color = 'var(--blue)';
+    status.textContent = 'Buscando músicas na base... aguarde.';
+    resultsDiv.style.display = 'none';
+    $('btnSearchOptions').disabled = true;
+
+    try {
+        const results = await api('searchOptions', { query });
+        if(results.length === 0) {
+            status.style.color = 'var(--danger)';
+            status.textContent = 'Nenhuma música encontrada para este trecho.';
+            return;
+        }
+        
+        resultsDiv.innerHTML = results.map(r => `
+            <div onclick="selectSearchOption('${esc(r.queryStr)}')" style="padding: 12px 14px; border-bottom: 1px solid var(--line); cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='var(--panel2)'" onmouseout="this.style.background='transparent'">
+                <div style="font-weight: bold; color: var(--text);">${esc(r.musica)}</div>
+                <div style="font-size: 12px; color: var(--muted); margin-top: 2px;">👤 ${esc(r.artista)}</div>
+                <div style="font-size: 11px; color: var(--purple); margin-top: 4px;">🔗 ${esc(r.url)}</div>
+            </div>
+        `).join('');
+
+        resultsDiv.style.display = 'block';
+        status.textContent = 'Opções encontradas! Clique na desejada abaixo:';
+    } catch (e) {
+        status.style.color = 'var(--danger)';
+        status.textContent = 'Erro na busca: ' + e.message;
+    } finally {
+        $('btnSearchOptions').disabled = false;
+    }
+};
+
+// 2. Acionada ao clicar em uma opção da lista
+window.selectSearchOption = (queryStr) => {
+    $('cifraSearch').value = queryStr;
+    $('searchResults').style.display = 'none';
+    $('btnFetchCifra').click(); // Dispara o scraper automaticamente
+};
+
+// 3. O Scraper de Extração da Cifra em si
 $('btnFetchCifra').onclick = async () => {
     const query = $('cifraSearch').value.trim();
     if(!query) return;
     const status = $('cifraSearchStatus');
     status.style.color = 'var(--blue)';
-    status.textContent = 'Buscando e formatando cifra... aguarde.';
+    status.textContent = 'Conectando ao Cifra Club e formatando acordes... aguarde.';
     $('btnFetchCifra').disabled = true;
 
     try {
