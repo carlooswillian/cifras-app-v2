@@ -1,0 +1,839 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#08090d">
+<title>Cifra Inteligente V2</title>
+<style>
+:root{color-scheme:dark;--bg:#08090d;--panel:#12141b;--panel2:#191c25;--line:#292d39;--text:#f5f6fb;--muted:#9ba2b3;--blue:#78a7ff;--purple:#b6a0ff;--green:#80dfb0;--danger:#ff8e9a;--radius:20px}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#171b2a 0,var(--bg) 50%);color:var(--text);font:15px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;min-height:100vh}
+button,input,textarea,select{font:inherit}button{cursor:pointer;border:0;border-radius:13px;padding:11px 15px;background:var(--blue);color:#09101f;font-weight:700;transition:0.2s}button.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}button.danger{background:#401b25;color:#ffdce0;border:1px solid #5a2531}button.danger:hover{background:#5a2531}button:disabled{opacity:0.6;cursor:not-allowed;}
+input,textarea,select{width:100%;background:#0c0e14;color:var(--text);border:1px solid var(--line);border-radius:12px;padding:12px;outline:none}input:focus,textarea:focus,select:focus{border-color:var(--blue)}textarea{min-height:190px;resize:vertical}.app{max-width:1200px;margin:auto;padding:22px 18px 90px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px}.brand{display:flex;align-items:center;gap:12px}.menu-toggle{display:flex;align-items:center;justify-content:center;width:42px;height:42px;background:transparent;border:1px solid var(--line);color:var(--text);border-radius:12px;font-size:22px;cursor:pointer;transition:0.2s;margin-right:4px}.menu-toggle:hover{background:var(--panel2)}.logo{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(145deg,#8db4ff,#b8a5ff);color:#101425;font-size:22px;font-weight:900}.eyebrow{color:var(--blue);font-size:11px;text-transform:uppercase;letter-spacing:.16em;font-weight:800}.brand h1{font-size:19px;margin:0;letter-spacing:-.04em}.brand p{margin:0;color:var(--muted);font-size:12px}.top-actions{display:flex;gap:8px;flex-wrap:wrap}.layout{display:block;max-width:100%}.panel{background:rgba(18,20,27,.88);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:0 18px 55px #0002}.panel h2{font-size:17px;margin:0 0 14px;letter-spacing:-.02em}.sidebar{position:fixed;top:0;left:0;height:100vh;width:320px;max-width:85vw;z-index:1000;transform:translateX(-100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);border-radius:0;border-right:1px solid var(--line);border-top:0;border-bottom:0;border-left:0;background:rgba(14,16,22,0.98);backdrop-filter:blur(10px);margin:0;overflow-y:auto;padding:22px 18px}.sidebar.open{transform:translateX(0)}
+.backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:999;opacity:0;pointer-events:none;transition:0.3s ease;backdrop-filter:blur(2px)}.backdrop.open{opacity:1;pointer-events:auto}.muted{color:var(--muted)}.search{margin-bottom:12px}.song-list{display:flex;flex-direction:column;gap:7px;overflow:auto}.song-item{text-align:left;width:100%;background:transparent;color:var(--text);border:1px solid transparent;padding:12px;border-radius:13px;cursor:pointer}.song-item:hover,.song-item.active{background:var(--panel2);border-color:var(--line)}.song-item strong{display:block;font-size:14px}.song-item small{color:var(--muted)}.maincol{display:flex;flex-direction:column;gap:18px;min-width:0;width:100%}.hero{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.hero h2{font-size:25px;letter-spacing:-.045em;margin:3px 0}.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.chip{font-size:12px;padding:5px 9px;background:#202536;border:1px solid #30384d;border-radius:100px;color:#d6def5}.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}.tab{background:transparent;border:1px solid var(--line);color:var(--muted);padding:8px 12px;transition:0.2s}.tab.active{background:#202a42;border-color:#3e5e99;color:#e5edff}.section{margin:17px 0 22px}.section h3{margin:0 0 12px;color:var(--purple);font-size:12px;letter-spacing:.12em;text-transform:uppercase}.progression-row{display:flex;flex-wrap:wrap;gap:6px;align-items:stretch;margin-bottom:8px}.degree-card{min-width:36px;flex:1;background:#191c25;border:1px solid #30384d;border-radius:10px;text-align:center;display:flex;flex-direction:column;justify-content:center;position:relative}.degree-card b{display:block;color:var(--blue)}.degree-card small{color:var(--muted);font-size:10px}.repeat-badge{background:#202536;border:1px solid #3e5e99;color:var(--blue);display:grid;place-items:center;padding:0 8px;border-radius:10px;font-weight:800;font-size:12px}.section-summary{padding:12px 0;border-bottom:1px solid var(--line)}.empty{padding:30px 10px;text-align:center;color:var(--muted)}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field label{font-size:12px;color:var(--muted);font-weight:700}.span2{grid-column:1/-1}.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}.toolbar{display:flex;gap:8px;flex-wrap:wrap}.notice{font-size:12px;color:#c3c9d8;background:#171a23;border:1px solid var(--line);padding:11px 13px;border-radius:12px;margin-top:12px}.status{font-size:12px;color:var(--green);min-height:18px;margin-top:8px}.hidden{display:none!important}.medley{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}.medley:last-child{border:0}.small{font-size:12px}.footer{text-align:center;color:#626a7b;font-size:11px;margin-top:24px}
+.modal {position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);z-index:1001;width:90%;max-width:450px;padding:22px;box-shadow:0 24px 60px rgba(0,0,0,0.6);max-height:85vh;display:flex;flex-direction:column}
+.modal-header {display:flex;justify-content:space-between;align-items:center}
+.modal-body {overflow-y:auto;padding-right:5px;margin-top:16px}
+.modal-body::-webkit-scrollbar {width:6px}
+.modal-body::-webkit-scrollbar-thumb {background:var(--line);border-radius:6px}
+@media(max-width:800px){.top-actions button{padding:9px 11px}.app{padding:16px 12px 60px}.hero h2{font-size:22px}.panel{padding:15px}.form-grid{grid-template-columns:1fr}.span2{grid-column:auto}}
+</style>
+</head>
+<body>
+<div id="backdrop" class="backdrop"></div>
+
+<div id="medleyModal" class="modal hidden">
+    <div class="modal-header">
+        <h3 style="margin:0;">Adicionar ao Medley</h3>
+        <button class="menu-toggle" onclick="closeModal('medleyModal')" style="width:32px;height:32px;font-size:16px;margin:0;">✕</button>
+    </div>
+    <div class="modal-body" id="medleyResults"></div>
+</div>
+
+<div id="confirmModal" class="modal hidden">
+    <div class="modal-header">
+        <h3 style="margin:0; color:var(--danger)">Excluir Cifra</h3>
+    </div>
+    <div class="modal-body" id="confirmMessage" style="margin-bottom:24px;margin-top:12px;"></div>
+    <div class="toolbar" style="justify-content:flex-end;">
+        <button class="secondary" onclick="closeModal('confirmModal')">Cancelar</button>
+        <button class="danger" id="confirmActionBtn">Sim, Excluir</button>
+    </div>
+</div>
+
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <button id="menuBtn" class="menu-toggle">☰</button>
+      <div class="logo">♪</div>
+      <div><div class="eyebrow">Seu songbook</div><h1>Cifra Inteligente</h1></div>
+    </div>
+    <div class="top-actions"><button id="newBtn">＋ Nova cifra</button></div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <h2 style="margin:0;">Biblioteca <span class="muted" id="songCount"></span></h2>
+        <button class="secondary" id="refreshBtn" style="padding:6px 10px;font-size:12px;">↻ Atualizar</button>
+      </div>
+      <input class="search" id="search" placeholder="Buscar música, artista ou tom…">
+      <div class="song-list" id="songList"><div class="empty">Conecte o backend para carregar suas músicas.</div></div>
+    </aside>
+
+    <main class="maincol">
+      <section class="panel" id="viewer">
+        <div class="empty"><div style="font-size:34px">♫</div><strong>Seu próximo louvor começa aqui.</strong><p>Abra o menu lateral para selecionar uma música ou importe uma nova cifra.</p><button id="emptyNewBtn">Adicionar cifra</button></div>
+      </section>
+
+      <section class="panel hidden" id="editor">
+        <div class="hero"><div><div class="eyebrow">Adicionar ao songbook</div><h2>Adicionar cifra</h2><p class="muted small">Busque automaticamente ou preencha manualmente.</p></div><button class="secondary" id="closeEditor">Fechar</button></div>
+        
+        <div class="form-grid">
+          
+          <!-- NOVO: Bloco de Importação do Cifra Club -->
+          <div class="field span2" style="background: var(--panel2); padding: 18px; border-radius: 12px; border: 1px solid #3e5e99; margin-bottom: 12px;">
+            <label for="cifraSearch" style="color: var(--blue); font-size: 13px;">☁️ Busca Inteligente (Cifra Club)</label>
+            <div style="display:flex; gap:8px; margin-top:6px; align-items:center; flex-wrap:wrap;">
+                <input id="cifraSearch" placeholder="Ex: Gabriela Rocha - Toda Terra ou cole a URL" style="flex: 1; min-width: 200px;">
+                <button id="btnFetchCifra" style="background: var(--blue); color: #08090d; padding: 12px 18px;">Buscar e Preencher</button>
+            </div>
+            <div id="cifraSearchStatus" class="status small"></div>
+          </div>
+
+          <div class="field"><label for="title">Título</label><input id="title" placeholder="Ex.: Toda Terra"></div>
+          <div class="field"><label for="artist">Artista</label><input id="artist" placeholder="Ex.: Gabriela Rocha"></div>
+          <div class="field"><label for="key">Tom original (Som da música)</label><input id="key" placeholder="Ex.: Bb, E, C#m"></div>
+          <div class="field"><label for="capo">Capotraste sugerido (opcional)</label><input id="capo" type="number" min="0" max="12" placeholder="Ex.: 3"></div>
+          
+          <div class="field span2">
+            <label for="raw">Cifra Completa</label>
+            <textarea id="raw" placeholder="A cifra será colada automaticamente aqui após a busca, ou você pode inserir manualmente..."></textarea>
+          </div>
+          
+          <div class="field span2"><label for="notes">Observações</label><input id="notes" placeholder="Ex.: versão ao vivo, dedilhado no início..."></div>
+        </div>
+        
+        <div class="notice">Dica: Os tempos da música podem ser desenhados colocando o número entre parênteses colado no acorde. Ex: Bm(4).</div>
+        <div class="row" style="margin-top:14px"><button id="saveBtn">Salvar música</button><button class="secondary" id="previewBtn">Pré-visualizar</button></div>
+        <div class="status" id="editorStatus"></div>
+        <pre id="preview" class="hidden" style="white-space:pre-wrap;color:var(--muted);background:#12141b;padding:15px;border-radius:12px;border:1px solid var(--line);"></pre>
+      </section>
+    </main>
+  </div>
+  <div class="footer">CIFRA INTELIGENTE · MVP V2.0.0 · Importação Direta do Cifra Club</div>
+</div>
+<script>
+/*
+ * CONFIGURE API_URL com a URL /exec do Web App do Apps Script.
+ */
+const API_URL = 'https://script.google.com/macros/s/AKfycbyKPbVtK5I8xkUo5RpHoZbDZOtEmLLiJyI2QG-g1_vl1FjM7uMtrJBbv9ARcYvqQDXc/exec';
+
+let songs = [], currentSong = null;
+let isMedleyMode = false;
+let medleySongs = [];
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const configured = () => API_URL.startsWith('https://script.google.com/') && !API_URL.includes('COLE_AQUI');
+
+const updateBackdrop = () => {
+    const hasModal = document.querySelectorAll('.modal:not(.hidden)').length > 0;
+    const hasSidebar = $('sidebar').classList.contains('open');$('backdrop').classList.toggle('open', hasModal || hasSidebar);
+};
+const toggleMenu = () => { $('sidebar').classList.toggle('open'); updateBackdrop(); };$('menuBtn').onclick = toggleMenu;
+
+function openModal(id) { $(id).classList.remove('hidden'); updateBackdrop(); }
+function closeModal(id) { $(id).classList.add('hidden'); updateBackdrop(); }
+
+$('backdrop').onclick = () => {$('sidebar').classList.remove('open'); 
+    document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden')); 
+    updateBackdrop(); 
+};
+
+async function api(action, data={}) {
+  if (!configured()) throw new Error('Configure API_URL no index.html com a URL /exec do Apps Script.');
+  const response = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({action,...data}) });
+  const json = await response.json();
+  if (!json.ok) throw new Error(json.error || 'Erro na API');
+  return json.data;
+}
+
+function notify(el, msg, error=false) { el.textContent=msg; el.style.color=error?'var(--danger)':'var(--green)'; }
+function openEditor() { $('editor').classList.remove('hidden'); $('viewer').classList.add('hidden');$('editorStatus').textContent=''; window.scrollTo({top:0,behavior:'smooth'}); }
+function closeEditor() { $('editor').classList.add('hidden');$('viewer').classList.remove('hidden'); }
+function resetEditor() { ['cifraSearch','title','artist','key','capo','raw','notes'].forEach(id=>$(id).value='');$('preview').classList.add('hidden'); $('cifraSearchStatus').textContent='';}
+
+// LÓGICA DE BUSCA DO CIFRA CLUB
+$('btnFetchCifra').onclick = async () => {
+    const query = $('cifraSearch').value.trim();
+    if(!query) return;
+    const status = $('cifraSearchStatus');
+    status.style.color = 'var(--blue)';
+    status.textContent = 'Buscando e formatando cifra... aguarde.';
+    $('btnFetchCifra').disabled = true;
+
+    try {
+        const data = await api('fetchCifraClub', { query });
+        $('title').value = data.titulo || '';
+        $('artist').value = data.artista || '';
+        $('key').value = data.tomOriginal || '';
+        $('capo').value = data.capotrasteSugerido || '';
+        $('raw').value = data.cifraOriginal || '';
+        
+        $('raw').dispatchEvent(new Event('input'));
+        status.style.color = 'var(--green)';
+        status.textContent = '✔ Cifra importada com sucesso!';
+    } catch (e) {
+        status.style.color = 'var(--danger)';
+        status.textContent = 'Erro: ' + e.message;
+    } finally {
+        $('btnFetchCifra').disabled = false;
+    }
+};
+
+// AUTO-COMPLETAR BASICO SE COLAR MANUALMENTE
+$('raw').addEventListener('input', function() {
+  const val = this.value;
+  const tomM = val.match(/Tom:\s*([A-G](?:#|b)?m?)/i);
+  if (tomM && !$('key').value)$('key').value = tomM[1];
+  const capoM = val.match(/Capotraste:\s*(\d+)/i) || val.match(/Capo:\s*(\d+)/i);
+  if (capoM && !$('capo').value)$('capo').value = capoM[1];
+
+  const lines = val.split('\n').map(l => l.trimEnd()).filter(l => l !== '');
+  if (lines.length > 0) {
+    let headerText = lines[0].replace(/[\u200B-\u200D\uFEFF]/g, '').split(/Composição de:/i)[0].trim();
+    let splitMatch = headerText.match(/([a-z0-9áéíóúâêôãõç!?"'\)])([A-Z])/);
+    let possibleTitle = headerText;
+    let possibleArtist = "";
+    
+    if (splitMatch) {
+        let splitIdx = splitMatch.index + 1;
+        possibleTitle = headerText.substring(0, splitIdx).trim();
+        possibleArtist = headerText.substring(splitIdx).trim();
+    } else if (lines.length > 1) {
+        let nextLine = lines[1].replace(/[\u200B-\u200D\uFEFF]/g, '').split(/Composição de:/i)[0].trim();
+        if (!nextLine.match(/^(Tom:|Composição|\[|Capo|Afinação)/i) && !chordLine(nextLine)) {
+            possibleArtist = nextLine;
+        }
+    }
+    if (!possibleTitle.match(/^(Tom:|\[|Capo|Afinação)/i) && !$('title').value) {$('title').value = possibleTitle;}
+    if (possibleArtist && !$('artist').value) {$('artist').value = possibleArtist;}
+  }
+});
+
+const CHORD_REGEX = /^[A-G](?:#|b)?(?:M|m|maj|min|dim|aug|sus|add)?\d*(?:M|maj|m)?(?:\([^)]+\))?(?:\/[A-G](?:#|b)?)?(?:\(\d+(?:\.\d+)?\))?$/;
+const BEAT_REGEX = /\((0\.5|1|1\.5|2|2\.5|3|4|5|6|7|8|12|16)\)/;
+
+const flatToSharp = {'Db':'C#', 'Eb':'D#', 'Gb':'F#', 'Ab':'G#', 'Bb':'A#'};
+const notesArr = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+
+function getWrittenKey(origKey, capoVal) {
+  const c = parseInt(capoVal);
+  if(isNaN(c) || !origKey) return origKey;
+  let cleanKey = origKey.replace(/m/i, '').trim();
+  let isMinor = origKey.toLowerCase().endsWith('m');
+  let standardKey = cleanKey;
+  if (cleanKey.length > 1 && cleanKey[1] === 'b') { standardKey = flatToSharp[cleanKey.substring(0,2)] || cleanKey; }
+  let idx = notesArr.indexOf(standardKey);
+  if (idx === -1) return origKey; 
+  let newIdx = (idx - c) % 12;
+  if (newIdx < 0) newIdx += 12;
+  let written = notesArr[newIdx];
+  if (written === 'A#') written = 'Bb';
+  if (written === 'D#') written = 'Eb';
+  return written + (isMinor ? 'm' : '');
+}
+
+function getRelativeMajor(key) {
+   if(!key) return key;
+   let clean = key.trim();
+   if(!clean.toLowerCase().endsWith('m')) return clean;
+   let root = clean.replace(/m$/i, '');
+   if (root.length > 1 && root[1] === 'b') root = flatToSharp[root.substring(0,2)] || root;
+   let idx = notesArr.indexOf(root);
+   if (idx === -1) return clean;
+   let relIdx = (idx + 3) % 12;
+   let relMajor = notesArr[relIdx];
+   if(relMajor === 'A#') relMajor = 'Bb';
+   if(relMajor === 'D#') relMajor = 'Eb';
+   return relMajor;
+}
+
+function renderCapoVariations(originalKey) {
+  if(!originalKey) return '';
+  let cleanKey = originalKey.replace(/m/i, '').trim();
+  let isMinor = originalKey.toLowerCase().endsWith('m');
+  if (isMinor) return ''; 
+
+  if (cleanKey.length > 1 && cleanKey[1] === 'b') cleanKey = flatToSharp[cleanKey.substring(0,2)] || cleanKey;
+  let idx = notesArr.indexOf(cleanKey);
+  if (idx === -1) return '';
+
+  let gIdx = notesArr.indexOf('G');
+  let capoI = (idx - gIdx + 12) % 12;
+  let kI = notesArr[idx];
+  
+  let ivIdx = (idx + 5) % 12;
+  let capoIV = (ivIdx - gIdx + 12) % 12;
+  let kIV = notesArr[ivIdx];
+
+  let vIdx = (idx + 7) % 12;
+  let capoV = (vIdx - gIdx + 12) % 12;
+  let kV = notesArr[vIdx];
+
+  const formatNote = n => { if(n === 'A#') return 'Bb'; if(n === 'D#') return 'Eb'; return n; };
+
+  let chipsHtml = [];
+  if (capoI <= 5) chipsHtml.push(`<span class="chip" style="background:#202536; border-color:#3e5e99;">Tom ${formatNote(kI)} (1º) → Capo na ${capoI}ª</span>`);
+  if (capoIV <= 5) chipsHtml.push(`<span class="chip" style="background:#202536; border-color:#3e5e99;">Tom ${formatNote(kIV)} (4º) → Capo na ${capoIV}ª</span>`);
+  if (capoV <= 5) chipsHtml.push(`<span class="chip" style="background:#202536; border-color:#3e5e99;">Tom ${formatNote(kV)} (5º) → Capo na ${capoV}ª</span>`);
+
+  if (chipsHtml.length === 0) return '';
+
+  return `
+    <div style="background:var(--panel2); border:1px solid var(--line); border-radius:12px; padding:14px; margin-top:12px;">
+      <div style="font-size:11px; color:var(--blue); font-weight:800; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.08em;">💡 Sugestões de Capotraste (Tocar no Shape de G)</div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        ${chipsHtml.join('')}
+      </div>
+      <div class="muted" style="font-size:12px; margin-top:8px;">Variações ideais para medleys (Até 5ª casa). O Shape de G possui transições mais abertas e harmônicas.</div>
+    </div>
+  `;
+}
+
+function chordDegree(chord, key) {
+  let cleanChord = chord.replace(BEAT_REGEX, '');
+  const m = cleanChord.match(/^([A-G](?:#|b)?)(.*)$/);
+  if(!m || !key) return '?';
+  let cRoot = m[1];
+  if (cRoot.length > 1 && cRoot[1] === 'b') cRoot = flatToSharp[cRoot] || cRoot;
+  let kRoot = key.replace(/m/i, '').trim();
+  if (kRoot.length > 1 && kRoot[1] === 'b') kRoot = flatToSharp[kRoot] || kRoot;
+  let cIdx = notesArr.indexOf(cRoot);
+  let kIdx = notesArr.indexOf(kRoot);
+  if (cIdx === -1 || kIdx === -1) return '?';
+  let sem = (cIdx - kIdx + 12) % 12;
+  const map = {0:'1', 1:'b2', 2:'2', 3:'b3', 4:'3', 5:'4', 6:'b5', 7:'5', 8:'b6', 9:'6', 10:'b7', 11:'7'};
+  const isMinor = m[2].startsWith('m') && !m[2].startsWith('maj') && !m[2].startsWith('m(maj');
+  return map[sem] + (isMinor ? 'm' : '');
+}
+
+function chordLine(line) {
+   const trimmed = line.trim();
+   if (!trimmed) return false;
+   const tokens = trimmed.split(/\s+/);
+   return tokens.every(t => {
+       return CHORD_REGEX.test(t) ||
+              /^[()[\]-]+$/.test(t) ||
+              (t.startsWith('(') && t.endsWith(')') && CHORD_REGEX.test(t.slice(1,-1))) ||
+              (t.startsWith('(') && CHORD_REGEX.test(t.slice(1))) ||
+              (t.endsWith(')') && CHORD_REGEX.test(t.slice(0,-1)));
+   });
+}
+
+function normalizeSection(name){
+  const n=name.toLowerCase();
+  let base = name;
+  if(n.includes('intro')) base = 'Introdução';
+  else if(n.includes('interl')) base = 'Interlúdio'; 
+  else if(n.includes('pré')||n.includes('pre')) base = 'Pré-Refrão'; 
+  else if(n.includes('refr')||n.includes('coro')) base = 'Refrão';
+  else if(n.includes('primeira parte')||n.includes('vers')) base = 'Primeira Parte';
+  else if(n.includes('segunda parte')) base = 'Segunda Parte';
+  else if(n.includes('ponte')||n.includes('terceira parte')) base = 'Ponte';
+  else if(n.includes('solo')) base = 'Solo';
+  else if(n.includes('final')) base = 'Final';
+  if (name.includes('-')) {
+    const parts = name.split('-');
+    if (parts.length > 1) { return base + ' - ' + parts.slice(1).join('-').trim(); }
+  }
+  return base;
+}
+
+function localParse(raw) {
+  const lines=raw.replace(/\r/g,'').split('\n');
+  const out=[]; let section={name:'Introdução',lines:[]};
+  function flush(){ if(section.lines.some(l => l.chords.trim() || l.lyric.trim())) out.push(section); }
+  
+  lines.forEach(line=>{
+    const t = line.replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
+    const m = t.match(/^\[(.*?)\](.*)$/);
+    if(m){
+      flush();
+      section={name:normalizeSection(m[1]),lines:[]};
+      let rem = m[2].trimEnd(); 
+      if(rem) {
+        const isChord = chordLine(rem.trim());
+        section.lines.push({chords:isChord?rem:'',lyric:isChord?'':rem});
+      }
+      return;
+    }
+    if(/(Tom:|Afinação:|Composição de:|Capotraste:|Capo:)/i.test(t)) return;
+    if(!t) { section.lines.push({chords: '', lyric: ''}); return; }
+    if (t.startsWith('(') && t.endsWith(')')) {
+       let inner = t.slice(1, -1).trim();
+       if (chordLine(inner)) {
+           section.lines.push({ chords: line.trimEnd(), lyric: '' });
+           return; 
+       }
+    }
+    const isChord=chordLine(t);
+    section.lines.push({chords:isChord?line.trimEnd():'', lyric:isChord?'':line.trimEnd()});
+  });
+  flush();
+  return out;
+}
+
+function extractChordsFromLine(lineStr) {
+   let ch = [];
+   lineStr.split(/\s+/).forEach(t => {
+      if(CHORD_REGEX.test(t)) { ch.push(t); return; }
+      if(t.startsWith('(') && t.endsWith(')') && CHORD_REGEX.test(t.slice(1,-1))) { ch.push(t.slice(1,-1)); return; }
+      if(t.startsWith('(') && CHORD_REGEX.test(t.slice(1))) { ch.push(t.slice(1)); return; }
+      if(t.endsWith(')') && CHORD_REGEX.test(t.slice(0,-1))) { ch.push(t.slice(0,-1)); return; }
+   });
+   return ch;
+}
+
+function getSectionSnippet(sec) {
+  const line = sec.lines.find(l => l.lyric && l.lyric.trim().length > 0);
+  if (line) {
+    let text = line.lyric.trim();
+    let words = text.split(/\s+/);
+    let snippet = words.slice(0, 4).join(' ');
+    if (words.length > 4) snippet += '...';
+    return ` <span class="muted" style="font-size:13px; font-weight:normal; text-transform:none; margin-left:6px; letter-spacing: normal;">(${esc(snippet)})</span>`;
+  }
+  return '';
+}
+
+function compactProgression(sec, key) {
+  let chordsData = []; 
+  sec.lines.forEach((l, idx) => {
+    if(l.chords) {
+      extractChordsFromLine(l.chords).forEach(c => { chordsData.push({ chord: c, lineIdx: idx }); });
+    }
+  });
+  if (chordsData.length === 0) return [];
+  
+  let allDeg = [];
+  const getRoot = c => { const m = c.match(/^([A-G](?:#|b)?)/); return m ? m[1] : ''; };
+
+  for (let i = 0; i < chordsData.length; i++) {
+    let c = chordsData[i].chord;
+    let durMatch = c.match(BEAT_REGEX);
+    let durStr = durMatch ? durMatch[0] : '';
+    let cleanC = durMatch ? c.replace(BEAT_REGEX, '') : c;
+
+    let parts = cleanC.split('/');
+    let rootChord = parts[0];
+    let bassNote = parts[1];
+    let rootDeg = chordDegree(rootChord, key);
+
+    if (bassNote) {
+        let bassDeg = chordDegree(bassNote, key).replace(/m$/, '');
+        allDeg.push({ deg: rootDeg + '/' + bassDeg + durStr, orig: c, lineIdx: chordsData[i].lineIdx });
+        continue;
+    }
+    allDeg.push({ deg: rootDeg + durStr, orig: c, lineIdx: chordsData[i].lineIdx });
+  }
+
+  let seqs = []; let i = 0; let n = allDeg.length;
+  while (i < n) {
+    let bestLen = 1; let maxCount = 1; let maxCoverage = 0;
+    for (let len = 1; len <= Math.floor((n - i) / 2); len++) {
+      let count = 1;
+      while (i + count * len + len <= n) {
+        let chunk1 = allDeg.slice(i, i + len).map(x => x.deg).join(' ');
+        let chunk2 = allDeg.slice(i + count * len, i + count * len + len).map(x => x.deg).join(' ');
+        if (chunk1 === chunk2) count++; else break;
+      }
+      if (count > 1) {
+          let coverage = count * len;
+          if (coverage > maxCoverage) { 
+              maxCoverage = coverage; maxCount = count; bestLen = len; 
+          } else if (coverage === maxCoverage) { 
+              if (len < bestLen) { bestLen = len; maxCount = count; } 
+          }
+      }
+    }
+    if (maxCount > 1) {
+      seqs.push({ elements: allDeg.slice(i, i + bestLen), count: maxCount });
+      i += bestLen * maxCount;
+    } else {
+      seqs.push({ elements: [allDeg[i]], count: 1 });
+      i++;
+    }
+  }
+
+  let finalSeqs = [];
+  for (let s of seqs) {
+    if (s.count === 1) {
+      if (finalSeqs.length > 0 && finalSeqs[finalSeqs.length - 1].count === 1) {
+        finalSeqs[finalSeqs.length - 1].elements.push(s.elements[0]);
+      } else { finalSeqs.push({ elements: [...s.elements], count: 1 }); }
+    } else { finalSeqs.push(s); }
+  }
+
+  finalSeqs.forEach(seq => {
+     seq.subChunks = [];
+     const MAX_CHORDS = 8;
+     let chunk = [];
+
+     for (let j = 0; j < seq.elements.length; j++) {
+         chunk.push(seq.elements[j]);
+         let isLast = (j === seq.elements.length - 1);
+
+         let forceBreak = false;
+         if (chunk.length >= MAX_CHORDS) forceBreak = true;
+         else if (chunk.length === 4 && (seq.elements.length - j - 1) >= 4) forceBreak = true;
+
+         if (forceBreak || isLast) {
+             let startLine = chunk[0].lineIdx;
+             let endLine = chunk[chunk.length - 1].lineIdx;
+
+             let snippet = ''; let isInterlude = true;
+             let searchEnd = Math.min(sec.lines.length - 1, endLine + 1);
+             for (let k = startLine; k <= searchEnd; k++) {
+                if (sec.lines[k] && sec.lines[k].lyric && sec.lines[k].lyric.trim() !== '') {
+                   isInterlude = false;
+                   let words = sec.lines[k].lyric.trim().split(/\s+/);
+                   snippet = words.slice(0, 4).join(' ') + (words.length > 4 ? '...' : '');
+                   break;
+                }
+             }
+             if (isInterlude) snippet = 'Instrumental';
+             seq.subChunks.push({
+                 deg: chunk.map(x => x.deg),
+                 orig: chunk.map(x => x.orig),
+                 snippet: snippet,
+                 isInterlude: isInterlude
+             });
+             chunk = [];
+         }
+     }
+  });
+
+  return finalSeqs;
+}
+
+function renderSong(song) {
+  currentSong = song;
+  const sections = localParse(song.cifraOriginal||'');
+  
+  const writtenKey = getWrittenKey(song.tomOriginal, song.capotrasteSugerido);
+  const tomText = song.tomOriginal ? `Tom: ${esc(song.tomOriginal)}` : 'Tom —';
+  const capoText = song.capotrasteSugerido ? `Capo: ${esc(song.capotrasteSugerido)}` : '';
+  const writtenText = (writtenKey && writtenKey !== song.tomOriginal) ? `Tom Tocado: ${esc(writtenKey)}` : '';
+  const capoVariationsHtml = renderCapoVariations(song.tomOriginal);
+  
+  $('viewer').innerHTML = `
+    <div class="hero" style="flex-direction: column; width: 100%;">
+      <div style="display: flex; justify-content: space-between; width: 100%; align-items: flex-start; gap: 12px; flex-wrap: wrap;">
+        
+        <div id="viewModeHero" style="flex: 1 1 min-content; min-width: 150px;">
+          <div class="eyebrow">Modo palco · cifra salva</div>
+          <h2>${esc(song.titulo)}</h2>
+          <div class="muted">${esc(song.artista||'Artista não informado')}</div>
+          <div class="chips">
+            <span class="chip">${tomText}</span>
+            ${capoText ? `<span class="chip">${capoText}</span>` : ''}
+            ${writtenText ? `<span class="chip" style="background:var(--purple);color:#08090d;font-weight:bold;">${writtenText}</span>` : ''}
+          </div>
+        </div>
+
+        <div id="editModeHero" class="hidden" style="width: 100%; display:flex; flex-direction:column; gap:10px;">
+           <div class="field"><label>Título</label><input id="editTitle" value="${esc(song.titulo)}" placeholder="Ex: Toda Terra"></div>
+           <div class="field"><label>Artista</label><input id="editArtist" value="${esc(song.artista)}" placeholder="Ex: Gabriela Rocha"></div>
+           <div class="row">
+             <div class="field" style="flex:1"><label>Tom Original</label><input id="editKey" value="${esc(song.tomOriginal)}" placeholder="Ex: E"></div>
+             <div class="field" style="flex:1"><label>Capo</label><input id="editCapo" type="number" min="0" max="12" value="${esc(song.capotrasteSugerido)}" placeholder="Ex: 2"></div>
+           </div>
+           <div class="field">
+             <label>Conteúdo da Cifra</label>
+             <textarea id="editRaw" style="min-height: 250px; font-family: monospace; white-space: pre-wrap;">${esc(song.cifraOriginal)}</textarea>
+           </div>
+        </div>
+
+        <div class="toolbar" id="viewToolbar" style="flex: 0 0 auto;">
+          <button class="secondary" id="editBtn" style="padding: 10px; display: grid; place-items: center; border-radius: 12px;" title="Editar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+          </button>
+          <button class="secondary" id="medleyBtn">Medleys</button>
+        </div>
+      </div>
+      
+      <div class="toolbar hidden" id="editToolbar" style="margin-top: 16px; width: 100%; justify-content: flex-end; padding-top: 16px; border-top: 1px solid var(--line);">
+         <button class="danger" id="deleteBtn" style="margin-right: auto;">Excluir</button>
+         <button class="secondary" id="cancelEditBtn">Cancelar</button>
+         <button id="saveEditBtn">Salvar Alterações</button>
+      </div>
+    </div>
+    
+    ${capoVariationsHtml}
+
+    <div class="tabs" style="margin-top:16px">
+      <button class="tab active" data-view="degrees">Graus (Otimizado)</button>
+      <button class="tab" data-view="lyrics">Letra + acordes</button>
+    </div>
+    <div id="songContent">${renderSections(sections,'degrees', currentSong)}</div>
+  `;
+    
+  $('viewer').querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{$('viewer').querySelectorAll('[data-view]').forEach(x=>x.classList.toggle('active',x===b));$('songContent').innerHTML=renderSections(sections,b.dataset.view, currentSong); });$('medleyBtn').onclick = loadMedleys;
+  
+  $('editBtn').onclick = () => {
+      $('viewModeHero').classList.add('hidden');$('viewToolbar').classList.add('hidden');
+      $('editModeHero').classList.remove('hidden');$('editToolbar').classList.remove('hidden');
+  };
+  
+  $('cancelEditBtn').onclick = () => {
+      $('viewModeHero').classList.remove('hidden');$('viewToolbar').classList.remove('hidden');
+      $('editModeHero').classList.add('hidden');$('editToolbar').classList.add('hidden');
+      $('editTitle').value = song.titulo; $('editArtist').value = song.artista;
+      $('editKey').value = song.tomOriginal; $('editCapo').value = song.capotrasteSugerido;
+      $('editRaw').value = song.cifraOriginal;
+  };
+
+  $('saveEditBtn').onclick = async () => {
+      const btn = $('saveEditBtn'); btn.textContent = 'Salvando...'; btn.disabled = true;
+      try {
+          const updated = await api('updateSong', {
+              song: {
+                  id: song.id, titulo: $('editTitle').value, artista:$('editArtist').value,
+                  tomOriginal: $('editKey').value, capotrasteSugerido:$('editCapo').value,
+                  cifraOriginal: $('editRaw').value
+              }
+          });
+          const idx = songs.findIndex(s => s.id === updated.id);
+          if(idx > -1) songs[idx] = updated;
+          renderList(); renderSong(await api('getSong', {id: updated.id})); 
+      } catch(e) {
+          alert('Erro ao salvar: ' + e.message); btn.textContent = 'Salvar Alterações'; btn.disabled = false;
+      }
+  };
+  
+  $('deleteBtn').onclick = () => {$('confirmMessage').innerHTML = `Tem certeza que deseja excluir a cifra <strong>${esc(song.titulo)}</strong> da sua biblioteca?<br>Essa ação não pode ser desfeita.`;
+      $('confirmActionBtn').onclick = async () => {
+          const btn = $('confirmActionBtn'); btn.textContent = 'Excluindo...'; btn.disabled = true;
+          try {
+              await api('deleteSong', { id: song.id }); currentSong = null;
+              $('viewer').innerHTML = '<div class="empty"><div style="font-size:34px">♫</div><strong>Música excluída.</strong></div>';
+              closeModal('confirmModal'); await loadSongs();
+          } catch(e) { alert('Erro: ' + e.message); } 
+          finally { btn.textContent = 'Sim, Excluir'; btn.disabled = false; }
+      };
+      openModal('confirmModal');
+  };
+}
+
+function renderSections(sections, mode, songObj, isMedley = false) {
+  if(!sections.length)return '<div class="empty">Não foi possível montar a prévia.</div>';
+  const origKey = songObj.tomOriginal || '';
+  const tk = getWrittenKey(origKey, songObj.capotrasteSugerido);
+  
+  let isMinorKey = String(tk || '').toLowerCase().endsWith('m');
+  let conversionKey = tk;
+  let relativeWarning = '';
+
+  if (isMinorKey) {
+     conversionKey = getRelativeMajor(tk);
+     if (!isMedley) {
+        relativeWarning = `<div class="notice" style="margin-bottom: 16px; border-left: 4px solid var(--purple); background: #13111c;">💡 <strong>Tom Menor Detectado:</strong> A música está em <strong>${esc(tk)}</strong>. Exibindo os graus baseados no seu relativo Maior (<strong>${esc(conversionKey)}</strong>).</div>`;
+     } else {
+         relativeWarning = `<div style="font-size:11px; color:var(--purple); margin-bottom:10px;">Graus convertidos para Relativo Maior: ${esc(conversionKey)}</div>`;
+     }
+  }
+
+  const titleParts = songObj.titulo.split(/[/+]/).map(p => p.trim()).filter(p => p.length > 0);
+  const isExtensiveMedley = titleParts.length >= 3;
+  
+  if(mode==='degrees') {
+    const seen = new Set();
+    const uniqueSections = sections.filter(sec => {
+      const n = sec.name.toLowerCase();
+      if(seen.has(n)) return false; seen.add(n); return true;
+    });
+
+    return `${relativeWarning}<div class="section">${uniqueSections.map(sec=>{
+      const seqs = compactProgression(sec, conversionKey);
+
+      let html = seqs.map((seq, seqIdx) => {
+          let chunkHtml = seq.subChunks.map((chunk, chunkIdx) => {
+              let snippetHtml = '';
+              if (chunkIdx > 0 || (isExtensiveMedley && seqIdx === 0) || seqIdx > 0) {
+                  let color = chunk.isInterlude ? 'var(--purple)' : 'var(--muted)';
+                  let fontStyle = chunk.isInterlude ? 'normal' : 'italic';
+                  let quote = chunk.isInterlude ? '' : '"';
+                  snippetHtml = `<div style="font-size:12px; color:${color}; margin-bottom:5px; font-style:${fontStyle}; margin-top: 8px;">${quote}${esc(chunk.snippet)}${quote}</div>`;
+              }
+
+              let degHtml = chunk.deg.map((d, i) => {
+                  let m = d.match(/^(.*?)(\((0\.5|1|1\.5|2|2\.5|3|4|5|6|7|8|12|16)\))?$/);
+                  let durText = m[3] || '';
+                  let pb = durText ? '14px' : '8px';
+                  let durHtml = durText ? `<span style="position:absolute; bottom:2px; right:4px; font-size:10px; color:var(--muted); font-weight:800; opacity:0.8;">${durText}</span>` : '';
+                  return `<div class="degree-card" style="flex:0 1 auto;padding:8px 4px ${pb} 4px;"><b style="font-size:16px;color:var(--blue);">${esc(m[1])}</b>${durHtml}</div>`;
+              }).join('');
+
+              let isLastChunk = chunkIdx === seq.subChunks.length - 1;
+              let badge = (isLastChunk && seq.count > 1) ? `<div class="repeat-badge" title="Toda a sequência repete">${seq.count}x</div>` : '';
+              return `${snippetHtml}<div class="progression-row">${degHtml}${badge}</div>`;
+          }).join('');
+
+          let containerStyle = (seq.subChunks.length > 1 && seq.count > 1) 
+              ? 'background: rgba(0,0,0,0.2); border-left: 2px solid #3e5e99; padding-left: 12px; margin: 12px 0; border-radius: 4px; padding-bottom: 4px;' 
+              : 'margin-bottom: 14px;';
+          return `<div style="${containerStyle}">${chunkHtml}</div>`;
+      }).join('');
+
+      let secHeaderSnippet = getSectionSnippet(sec); 
+      let extraText = isExtensiveMedley ? '<span class="muted" style="font-size:11px; margin-left:8px; font-weight:normal; text-transform:none;">(Medley Fracionado)</span>' : secHeaderSnippet;
+
+      return `<div class="section-summary"><h3 style="display:flex;align-items:center;flex-wrap:wrap;margin-bottom:12px;">${esc(sec.name)} ${extraText}</h3>${html || '<p class="muted">Nenhum acorde isolado.</p>'}</div>`;
+
+    }).join('')}</div>`;
+  }
+  
+  return sections.map(sec=>{
+    return `<div class="section"><h3 style="display:flex;align-items:center;flex-wrap:wrap;margin-bottom:8px;">${esc(sec.name)}${getSectionSnippet(sec)}</h3><div style="font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 15px; line-height: 1.5;">${sec.lines.map(l=>{
+          if (l.chords) {
+              let cleanChords = esc(l.chords).replace(/\((0\.5|1|1\.5|2|2\.5|3|4|5|6|7|8|12|16)\)/g, (match) => {
+                  return ' '.repeat(match.length);
+              });
+              return `<div style="color:var(--blue); font-weight:800; white-space:pre-wrap;">${cleanChords}</div>`;
+          }
+          if (l.lyric) return `<div style="color:var(--text); white-space:pre-wrap;">${esc(l.lyric)}</div>`;
+          return `<div style="height:15px"></div>`; 
+        }).join('')}</div>${sec.lines.length===0?'<p class="muted">Seção sem conteúdo reconhecido.</p>':''}</div>`;
+  }).join('');
+}
+
+async function loadSongs() {
+  if(!configured()) { $('songList').innerHTML='<div class="empty">Configure a URL do backend no index.html para ativar a biblioteca.</div>';return; }
+  try { songs=await api('listSongs',{query:$('search').value}); renderList(); }
+  catch(e){$('songList').innerHTML=`<div class="empty">${esc(e.message)}</div>`;}
+}
+
+function renderList() {
+  $('songCount').textContent=`(${songs.length})`;
+  $('songList').innerHTML=songs.length?songs.map(s=>`<button class="song-item ${currentSong&&currentSong.id===s.id?'active':''}" data-id="${esc(s.id)}"><strong>${esc(s.titulo)}</strong><small>${esc(s.artista||'Artista não informado')} · ${esc(s.tomOriginal||'Tom —')}</small></button>`).join(''):'<div class="empty">Nenhuma música salva ainda.</div>';
+  
+  $('songList').querySelectorAll('[data-id]').forEach(b=>b.onclick=async()=>{
+    try{
+      isMedleyMode = false; medleySongs = [];
+      renderSong(await api('getSong',{id:b.dataset.id}));
+      renderList(); $('sidebar').classList.remove('open'); updateBackdrop();
+    }catch(e){alert(e.message)}
+  });
+}
+
+async function loadMedleys() {
+  $('medleyResults').innerHTML = '<div class="muted">Analisando sua biblioteca…</div>';
+  openModal('medleyModal');
+  
+  try {
+    let baseSong = medleySongs.length > 0 ? medleySongs[0] : currentSong;
+    const results = await api('suggestMedleys', {id: baseSong.id});
+    
+    const addedIds = medleySongs.map(s => s.id);
+    if (addedIds.length === 0) addedIds.push(currentSong.id);
+    const available = results.filter(m => !addedIds.includes(m.id));
+
+    $('medleyResults').innerHTML = available.length ? available.map(m=>`
+      <div class="medley" style="align-items:center; ${m.isMatch ? '' : 'opacity:0.7;'}">
+        <div>
+          <strong>${esc(m.titulo)}</strong>
+          <div class="small muted">${esc(m.artista||'')}</div>
+          <div class="small" style="color:var(--${m.isMatch ? 'green' : 'muted'}); margin-top:3px; font-weight: 500;">
+            ${m.isMatch ? '✓ ' : '⚠ '} ${esc(m.motivo)}
+          </div>
+        </div>
+        <button class="secondary small" onclick="addToMedley(event, '${m.id}')" style="white-space:nowrap; padding:6px 10px;">Adicionar</button>
+      </div>
+    `).join('') : '<div class="muted small" style="padding:10px 0;">Não há mais músicas para adicionar.</div>';
+  } catch(e) { $('medleyResults').textContent=e.message; }
+}
+
+async function addToMedley(event, targetId) {
+  const btn = event.currentTarget;
+  const origText = btn.textContent;
+  btn.textContent = 'Carregando...'; btn.disabled = true;
+  
+  try {
+    const targetSong = await api('getSong', {id: targetId});
+    if (!isMedleyMode) {
+       isMedleyMode = true;
+       medleySongs = [currentSong];
+    }
+    medleySongs.push(targetSong);
+    closeModal('medleyModal'); 
+    renderMedleyView();
+  } catch(e) {
+    alert(e.message); btn.textContent = origText; btn.disabled = false;
+  }
+}
+
+function renderMedleyView() {
+    document.querySelector('.tabs').classList.add('hidden');
+    document.querySelectorAll('.chips, [style*="💡"]').forEach(el => { if(el) el.classList.add('hidden'); });
+
+    const hero = document.querySelector('.hero');
+    hero.innerHTML = `
+      <div style="display:flex; justify-content:space-between; width:100%; align-items:flex-start; gap: 12px;">
+          <div style="flex-grow:1;">
+            <div class="eyebrow" style="color:var(--green); margin-bottom: 6px;">Modo Medley (Lado a Lado)</div>
+            <h2 style="font-size:22px; line-height:1.3; margin:0;">
+              ${medleySongs.map(s => esc(s.titulo)).join(' <span class="muted" style="font-weight:400; font-size:18px;">+</span> ')}
+            </h2>
+          </div>
+          <button class="menu-toggle" onclick="exitMedley()" title="Sair do Medley" style="width:36px; height:36px; flex-shrink:0; margin:0;">✕</button>
+      </div>
+    `;
+
+    let columnsHtml = medleySongs.map((song, idx) => {
+        const sec = localParse(song.cifraOriginal || '');
+        return `
+        <div style="min-width:300px; flex: 1 1 0; background: var(--panel2); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display:flex; flex-direction:column;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px; border-bottom:1px solid var(--line); padding-bottom:12px;">
+              <div>
+                <h3 style="margin:0; color:var(--${idx % 2 === 0 ? 'blue' : 'purple'}); font-size:16px; margin-bottom:4px;">${idx + 1}. ${esc(song.titulo)}</h3>
+                <div style="font-size:11px; color:var(--muted);">${esc(song.tomOriginal||'')} ${song.capotrasteSugerido ? `· Capo ${song.capotrasteSugerido}` : ''}</div>
+              </div>
+              ${idx > 0 ? `<button onclick="removeFromMedley(${idx})" style="background:transparent; border:none; color:var(--muted); padding:4px; font-size:16px; cursor:pointer;" title="Remover Música do Medley">✕</button>` : ''}
+          </div>
+          <div style="flex-grow:1;">
+              ${renderSections(sec, 'degrees', song, true)}
+          </div>
+        </div>
+        `;
+    }).join('');
+
+    $('songContent').innerHTML = `
+      <div style="display:flex; gap: 16px; overflow-x: auto; padding-bottom: 16px; align-items: stretch; margin-top:24px;">
+        ${columnsHtml}
+        <button onclick="loadMedleys()" class="secondary" style="min-width:200px; display:flex; flex-direction:column; align-items:center; justify-content:center; border:1px dashed var(--line); gap:8px; border-radius:12px; background: transparent;">
+            <span style="font-size:32px; font-weight: 300; color:var(--muted);">+</span>
+            <span style="color:var(--muted);">Adicionar Música</span>
+        </button>
+      </div>
+    `;
+}
+
+function removeFromMedley(index) {
+   medleySongs.splice(index, 1);
+   if (medleySongs.length <= 1) { exitMedley(); } else { renderMedleyView(); }
+}
+
+function exitMedley() {
+   isMedleyMode = false;
+   medleySongs = [];
+   renderSong(currentSong);
+}
+
+$('newBtn').onclick=$('emptyNewBtn').onclick=()=>{resetEditor();openEditor();$('sidebar').classList.remove('open');updateBackdrop();};$('closeEditor').onclick=closeEditor;
+$('refreshBtn').onclick=loadSongs;
+$('search').oninput=()=>loadSongs();
+
+$('previewBtn').onclick=()=>{
+  const sections=localParse($('raw').value);
+  $('preview').textContent=sections.map(s=>s.name+'\n'+s.lines.map(l=>[l.chords,l.lyric].filter(Boolean).join('\n')).join('\n')).join('\n\n');
+  $('preview').classList.remove('hidden')
+};
+
+$('saveBtn').onclick=async()=>{
+  const status=$('editorStatus');
+  const song={titulo:$('title').value,artista:$('artist').value,tomOriginal:$('key').value,bpm:'',compasso:'',capotrasteSugerido:$('capo').value,cifraOriginal:$('raw').value,observacoes:$('notes').value};
+  try {
+    notify(status,'Salvando música...');
+    const result=await api('importSong',{song});
+    notify(status,`Salvo: ${result.titulo}. Carregando...`);
+    await loadSongs(); renderSong(await api('getSong',{id:result.id})); closeEditor();
+  }
+  catch(e){notify(status,e.message,true);}
+};
+
+loadSongs();
+</script>
+</body>
+</html>
