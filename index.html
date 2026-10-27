@@ -199,13 +199,13 @@ window.selectSearchOption = (queryStr) => {
     $('btnFetchCifra').click(); // Dispara o scraper automaticamente
 };
 
-// 3. O Scraper de Extração da Cifra em si (AGORA NO FRONTEND VIA PROXY INVISÍVEL)
+// 3. O Scraper de Extração da Cifra em si (AGORA COM TIMEOUT E BUSCA PARALELA)
 $('btnFetchCifra').onclick = async () => {
     const query = $('cifraSearch').value.trim();
     if(!query) return;
     const status = $('cifraSearchStatus');
     status.style.color = 'var(--blue)';
-    status.textContent = 'Extraindo cifra anonimamente pelo navegador... aguarde.';
+    status.textContent = 'Extraindo cifra anonimamente... (máx 8 seg).';
     $('btnFetchCifra').disabled = true;
 
     try {
@@ -241,24 +241,28 @@ $('btnFetchCifra').onclick = async () => {
 
         if(tryUrls.length === 0) throw new Error("Cole o link direto ou use a busca.");
 
-        let html = null;
-        
-        // BURLANDO A SEGURANÇA: Faz o pedido via Proxy livre direto pelo seu navegador
-        for (let u of tryUrls) {
-            try {
-                let proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(u)}`;
-                let res = await fetch(proxyUrl);
-                let data = await res.json();
-                let content = data.contents;
-                
-                if (content && content.includes('<pre') && (content.includes('cifra_') || content.includes('imprimir'))) {
-                    html = content;
-                    break; // Encontrou e validou!
+        // Dispara todos os testes AO MESMO TEMPO (Muito mais rápido)
+        const fetchPromises = tryUrls.map(u => 
+            fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(u)}`)
+            .then(res => { if(!res.ok) throw new Error("Erro de rede"); return res.json(); })
+            .then(data => {
+                if (data.contents && data.contents.includes('<pre') && (data.contents.includes('cifra_') || data.contents.includes('imprimir'))) {
+                    return data.contents;
                 }
-            } catch(e) {}
-        }
+                throw new Error("Página sem cifra");
+            })
+        );
 
-        if (!html) throw new Error("Cifra não encontrada. Tente colar o link direto da barra de endereço.");
+        // Cronômetro: Se passar de 8 segundos, ele mata a operação
+        const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error("O servidor demorou muito para responder. Tente colar o link direto.")), 8000));
+
+        let html;
+        try {
+            // Promise.any pega a primeira requisição que der certo e ignora os erros das outras
+            html = await Promise.race([Promise.any(fetchPromises), timeout]);
+        } catch(e) {
+            throw new Error(e.message === "All promises were rejected" ? "Cifra não encontrada no site." : e.message);
+        }
 
         // Extrai os dados do HTML retornado
         let titleMatch = html.match(/<h1[^>]*>(.*?)<\/h1>/i);
@@ -296,6 +300,7 @@ $('btnFetchCifra').onclick = async () => {
         $('btnFetchCifra').disabled = false;
     }
 };
+
 
 
 // AUTO-COMPLETAR BASICO SE COLAR MANUALMENTE
