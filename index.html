@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#08090d">
-<title>Cifra Inteligente V3.0 (IA Powered)</title>
+<title>Cifra Inteligente V4.0 (Proxy Master)</title>
 <style>
 :root{color-scheme:dark;--bg:#08090d;--panel:#12141b;--panel2:#191c25;--line:#292d39;--text:#f5f6fb;--muted:#9ba2b3;--blue:#78a7ff;--purple:#b6a0ff;--green:#80dfb0;--danger:#ff8e9a;--radius:20px}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#171b2a 0,var(--bg) 50%);color:var(--text);font:15px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;min-height:100vh}
@@ -71,18 +71,14 @@ input,textarea,select{width:100%;background:#0c0e14;color:var(--text);border:1px
         
         <div class="form-grid">
           
-          <!-- Bloco de Busca com Inteligência Artificial Integrada -->
-          <div class="field span2" style="background: var(--panel2); padding: 18px; border-radius: 12px; border: 1px solid #3e5e99; margin-bottom: 12px;">
-            <label for="cifraSearch" style="color: var(--blue); font-size: 13px;">☁️ Motor de Geração IA (Busque nome ou cole um link)</label>
+          <div class="field span2" style="background: var(--panel2); padding: 18px; border-radius: 12px; border: 1px solid var(--line); margin-bottom: 12px;">
+            <label for="cifraSearch" style="color: var(--blue); font-size: 13px;">☁ Busca Inteligente (Nome ou Link Direto)</label>
             <div style="display:flex; gap:8px; margin-top:6px; align-items:center; flex-wrap:wrap;">
                 <input id="cifraSearch" placeholder="Ex: Morada - Pra onde eu irei?" style="flex: 1; min-width: 200px;" onkeydown="if(event.key === 'Enter') document.getElementById('btnSearchOptions').click()">
-                <button id="btnSearchOptions" style="background: var(--panel); color: var(--blue); border: 1px solid var(--blue); padding: 12px 18px;" title="Lista opções disponíveis">🔎 Buscar Opções</button>
-                <button id="btnFetchCifra" style="background: linear-gradient(145deg, #8db4ff, #b8a5ff); color: #08090d; padding: 12px 18px;" title="Gera a cifra instantaneamente via IA">✨ Gerar com IA</button>
+                <button id="btnSearchOptions" class="secondary" title="Lista opções disponíveis">🔎 Opções</button>
+                <button id="btnFetchCifra" title="Baixa a cifra original do site com espaços exatos">Extrair do Site</button>
             </div>
-            
-            <div id="searchResults" style="display:none; margin-top: 12px; background: #12141b; border: 1px solid var(--line); border-radius: 8px; max-height: 250px; overflow-y: auto;">
-            </div>
-
+            <div id="searchResults" style="display:none; margin-top: 12px; background: #12141b; border: 1px solid var(--line); border-radius: 8px; max-height: 250px; overflow-y: auto;"></div>
             <div id="cifraSearchStatus" class="status small"></div>
           </div>
 
@@ -93,7 +89,7 @@ input,textarea,select{width:100%;background:#0c0e14;color:var(--text);border:1px
           
           <div class="field span2">
             <label for="raw">Cifra Completa</label>
-            <textarea id="raw" placeholder="A IA colará a cifra automaticamente aqui..."></textarea>
+            <textarea id="raw" placeholder="A cifra será colada aqui, com o espaçamento original e perfeito..."></textarea>
           </div>
           
           <div class="field span2"><label for="notes">Observações</label><input id="notes" placeholder="Ex.: versão ao vivo, dedilhado no início..."></div>
@@ -106,7 +102,7 @@ input,textarea,select{width:100%;background:#0c0e14;color:var(--text);border:1px
       </section>
     </main>
   </div>
-  <div class="footer">CIFRA INTELIGENTE · MVP V3.0 · Geração por Inteligência Artificial (Groq)</div>
+  <div class="footer">CIFRA INTELIGENTE · V4.0 (Proxy Master)</div>
 </div>
 <script>
 /*
@@ -150,7 +146,7 @@ function closeEditor() { $('editor').classList.add('hidden');$('viewer').classLi
 function resetEditor() { ['cifraSearch','title','artist','key','capo','raw','notes'].forEach(id=>$(id).value='');$('preview').classList.add('hidden'); $('cifraSearchStatus').textContent=''; $('searchResults').style.display='none';}
 
 // -------------------------------------------------------------
-// FUNÇÕES DE BUSCA E INTEGRAÇÃO (IA)
+// FUNÇÕES DE BUSCA AUTOMÁTICA
 // -------------------------------------------------------------
 
 $('btnSearchOptions').onclick = async () => {
@@ -160,7 +156,7 @@ $('btnSearchOptions').onclick = async () => {
     const resultsDiv = $('searchResults');
     
     status.style.color = 'var(--blue)';
-    status.textContent = 'Buscando catálogo de músicas... aguarde.';
+    status.textContent = 'Buscando catálogo... aguarde.';
     resultsDiv.style.display = 'none';
     $('btnSearchOptions').disabled = true;
 
@@ -168,7 +164,7 @@ $('btnSearchOptions').onclick = async () => {
         const results = await api('searchOptions', { query });
         if(results.length === 0) {
             status.style.color = 'var(--danger)';
-            status.textContent = 'Nenhuma música encontrada para este trecho.';
+            status.textContent = 'Nenhuma música encontrada.';
             return;
         }
         
@@ -176,12 +172,12 @@ $('btnSearchOptions').onclick = async () => {
             <div onclick="selectSearchOption('${esc(r.queryStr)}')" style="padding: 12px 14px; border-bottom: 1px solid var(--line); cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='var(--panel2)'" onmouseout="this.style.background='transparent'">
                 <div style="font-weight: bold; color: var(--text);">${esc(r.musica)}</div>
                 <div style="font-size: 12px; color: var(--muted); margin-top: 2px;">👤 ${esc(r.artista)}</div>
-                <div style="font-size: 11px; color: var(--purple); margin-top: 4px;">✨ ${esc(r.url)}</div>
+                <div style="font-size: 11px; color: var(--green); margin-top: 4px;">✨ ${esc(r.url)}</div>
             </div>
         `).join('');
 
         resultsDiv.style.display = 'block';
-        status.textContent = 'Opções encontradas! Clique na desejada abaixo para que a IA crie a cifra:';
+        status.textContent = 'Clique na música desejada abaixo para extrair a cifra original:';
     } catch (e) {
         status.style.color = 'var(--danger)';
         status.textContent = 'Erro na busca: ' + e.message;
@@ -196,13 +192,13 @@ window.selectSearchOption = (queryStr) => {
     $('btnFetchCifra').click(); 
 };
 
-// ACIONAMENTO DA IA (Cérebro limpo, livre de bloqueios)
+// ACIONAMENTO DA EXTRAÇÃO (Usa o backend seguro agora!)
 $('btnFetchCifra').onclick = async () => {
     const query = $('cifraSearch').value.trim();
     if(!query) return;
     const status = $('cifraSearchStatus');
     status.style.color = 'var(--blue)';
-    status.textContent = 'O Motor de IA está criando a sua cifra. Isso leva entre 5 a 15 segundos. Aguarde... ✨';
+    status.textContent = 'Extraindo texto e partitura originais...';
     $('btnFetchCifra').disabled = true;
 
     try {
@@ -216,7 +212,7 @@ $('btnFetchCifra').onclick = async () => {
         
         $('raw').dispatchEvent(new Event('input'));
         status.style.color = 'var(--green)';
-        status.textContent = '✔ Cifra gerada com sucesso pela Inteligência Artificial!';
+        status.textContent = '✔ Cifra original importada perfeitamente!';
     } catch (e) {
         status.style.color = 'var(--danger)';
         status.textContent = 'Erro: ' + e.message;
