@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#08090d">
-<title>Cifra Inteligente V4.0 (Proxy Master)</title>
+<title>Cifra Inteligente V4.1 (Bypass Timeout)</title>
 <style>
 :root{color-scheme:dark;--bg:#08090d;--panel:#12141b;--panel2:#191c25;--line:#292d39;--text:#f5f6fb;--muted:#9ba2b3;--blue:#78a7ff;--purple:#b6a0ff;--green:#80dfb0;--danger:#ff8e9a;--radius:20px}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#171b2a 0,var(--bg) 50%);color:var(--text);font:15px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;min-height:100vh}
@@ -102,7 +102,7 @@ input,textarea,select{width:100%;background:#0c0e14;color:var(--text);border:1px
       </section>
     </main>
   </div>
-  <div class="footer">CIFRA INTELIGENTE · V4.0 (Proxy Master)</div>
+  <div class="footer">CIFRA INTELIGENTE · V4.1 (Anti-Travamento)</div>
 </div>
 <script>
 /*
@@ -143,7 +143,7 @@ async function api(action, data={}) {
 function notify(el, msg, error=false) { el.textContent=msg; el.style.color=error?'var(--danger)':'var(--green)'; }
 function openEditor() { $('editor').classList.remove('hidden'); $('viewer').classList.add('hidden');$('editorStatus').textContent=''; window.scrollTo({top:0,behavior:'smooth'}); }
 function closeEditor() { $('editor').classList.add('hidden');$('viewer').classList.remove('hidden'); }
-function resetEditor() { ['cifraSearch','title','artist','key','capo','raw','notes'].forEach(id=>$(id).value='');$('preview').classList.add('hidden'); $('cifraSearchStatus').textContent=''; $('searchResults').style.display='none';}
+function resetEditor() { ['cifraSearch','title','artist','key','capo','raw','notes'].forEach(id=>$(id).value='');$('preview').classList.add('hidden'); $('cifraSearchStatus').innerHTML=''; $('searchResults').style.display='none';}
 
 // -------------------------------------------------------------
 // FUNÇÕES DE BUSCA AUTOMÁTICA
@@ -192,17 +192,30 @@ window.selectSearchOption = (queryStr) => {
     $('btnFetchCifra').click(); 
 };
 
-// ACIONAMENTO DA EXTRAÇÃO (Usa o backend seguro agora!)
+// ACIONAMENTO DA EXTRAÇÃO (COM TIMEOUT PARA EVITAR TRAVAMENTO)
 $('btnFetchCifra').onclick = async () => {
     const query = $('cifraSearch').value.trim();
     if(!query) return;
     const status = $('cifraSearchStatus');
     status.style.color = 'var(--blue)';
-    status.textContent = 'Extraindo texto e partitura originais...';
+    
+    // Feedback visual em etapas
+    status.innerHTML = '⏱️ Iniciando extração (máximo 15 segundos)...<br>Testando proxys simultâneos para quebrar a segurança.';
     $('btnFetchCifra').disabled = true;
 
     try {
-        const data = await api('fetchCifraClub', { query });
+        // PROMISE DE TIMEOUT: Se demorar mais de 15 segundos, corta a operação para não travar o app.
+        const timeoutPromise = new Promise((_, reject) => {
+            setTimeout(() => {
+                reject(new Error("O servidor demorou muito para responder (Timeout). O site do Cifra Club pode estar bloqueando a extração hoje. Copie e cole a cifra manualmente na caixa abaixo."));
+            }, 15000); // 15 Segundos
+        });
+
+        // PROMISE DE EXTRAÇÃO: A chamada real ao backend
+        const fetchPromise = api('fetchCifraClub', { query });
+
+        // A CORRIDA: O que acontecer primeiro (sucesso ou timeout), ele assume
+        const data = await Promise.race([fetchPromise, timeoutPromise]);
         
         $('title').value = data.titulo || '';
         $('artist').value = data.artista || '';
@@ -212,10 +225,10 @@ $('btnFetchCifra').onclick = async () => {
         
         $('raw').dispatchEvent(new Event('input'));
         status.style.color = 'var(--green)';
-        status.textContent = '✔ Cifra original importada perfeitamente!';
+        status.innerHTML = '✔ Cifra original importada perfeitamente!';
     } catch (e) {
         status.style.color = 'var(--danger)';
-        status.textContent = 'Erro: ' + e.message;
+        status.innerHTML = '⚠ Erro: ' + e.message;
     } finally {
         $('btnFetchCifra').disabled = false;
     }
