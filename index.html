@@ -4,42 +4,40 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#08090d">
-<title>Cifra Inteligente v2</title>
+<title>Cifra Inteligente Ultra Compacta</title>
 <style>
-:root{color-scheme:dark;--bg:#08090d;--panel:#12141b;--panel2:#191c25;--line:#292d39;--text:#f5f6fb;--muted:#9ba2b3;--blue:#78a7ff;--purple:#b6a0ff;--green:#80dfb0;--danger:#ff8e9a;--radius:12px}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#171b2a 0,var(--bg) 50%);color:var(--text);font:14px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;min-height:100vh}
-button,input,textarea,select{font:inherit}button{cursor:pointer;border:0;border-radius:10px;padding:8px 12px;background:var(--blue);color:#09101f;font-weight:700;transition:0.2s}button.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}button.danger{background:#401b25;color:#ffdce0;border:1px solid #5a2531}button.danger:hover{background:#5a2531}
-input,textarea,select{width:100%;background:#0c0e14;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:10px;outline:none}input:focus,textarea:focus,select:focus{border-color:var(--blue)}textarea{min-height:160px;resize:vertical}.app{max-width:1400px;margin:auto;padding:12px 12px 80px}.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.brand{display:flex;align-items:center;gap:10px}.menu-toggle{display:flex;align-items:center;justify-content:center;width:36px;height:36px;background:transparent;border:1px solid var(--line);color:var(--text);border-radius:8px;font-size:20px;cursor:pointer;transition:0.2s;margin-right:2px}.menu-toggle:hover{background:var(--panel2)}.logo{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(145deg,#8db4ff,#b8a5ff);color:#101425;font-size:18px;font-weight:900}.eyebrow{color:var(--blue);font-size:10px;text-transform:uppercase;letter-spacing:.12em;font-weight:800}.brand h1{font-size:16px;margin:0;letter-spacing:-.04em}.brand p{margin:0;color:var(--muted);font-size:11px}.top-actions{display:flex;gap:6px;flex-wrap:wrap}.layout{display:block;max-width:100%}.panel{background:rgba(18,20,27,.88);border:1px solid var(--line);border-radius:var(--radius);padding:12px;box-shadow:0 18px 55px #0002}.panel h2{font-size:16px;margin:0 0 10px;letter-spacing:-.02em}.sidebar{position:fixed;top:0;left:0;height:100vh;width:300px;max-width:85vw;z-index:1000;transform:translateX(-100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);border-radius:0;border-right:1px solid var(--line);border-top:0;border-bottom:0;border-left:0;background:rgba(14,16,22,0.98);backdrop-filter:blur(10px);margin:0;overflow-y:auto;padding:20px 16px}.sidebar.open{transform:translateX(0)}
-.backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:999;opacity:0;pointer-events:none;transition:0.3s ease;backdrop-filter:blur(2px)}.backdrop.open{opacity:1;pointer-events:auto}.muted{color:var(--muted)}.search{margin-bottom:10px}.song-list{display:flex;flex-direction:column;gap:5px;overflow:auto}.song-item{text-align:left;width:100%;background:transparent;color:var(--text);border:1px solid transparent;padding:8px;border-radius:8px;cursor:pointer}.song-item:hover,.song-item.active{background:var(--panel2);border-color:var(--line)}.song-item strong{display:block;font-size:13px}.song-item small{color:var(--muted);font-size:11px}.maincol{display:flex;flex-direction:column;gap:10px;min-width:0;width:100%}.hero{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.hero h2{font-size:20px;letter-spacing:-.04em;margin:2px 0}.chips{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}.chip{font-size:10px;padding:3px 6px;background:#202536;border:1px solid #30384d;border-radius:100px;color:#d6def5}.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px}.tab{background:transparent;border:1px solid var(--line);color:var(--muted);padding:6px 8px;border-radius:6px; font-size: 12px; transition:0.2s}.tab.active{background:#202a42;border-color:#3e5e99;color:#e5edff}.section{margin:8px 0 12px}.section h3{margin:0 0 4px;color:var(--purple);font-size:10px;letter-spacing:.12em;text-transform:uppercase}.progression-row{display:flex;flex-wrap:wrap;gap:4px;align-items:stretch;margin-bottom:4px}.degree-card{min-width:28px;flex:1;background:#191c25;border:1px solid #30384d;border-radius:6px;text-align:center;display:flex;flex-direction:column;justify-content:center;position:relative}.degree-card b{display:block;color:var(--blue);font-size:13px;}.degree-card small{color:var(--muted);font-size:9px}.repeat-badge{background:#202536;border:1px solid #3e5e99;color:var(--blue);display:grid;place-items:center;padding:0 4px;border-radius:6px;font-weight:800;font-size:10px}.section-summary{padding:8px 0;border-bottom:1px solid var(--line)}.empty{padding:16px 8px;text-align:center;color:var(--muted)}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.field{display:flex;flex-direction:column;gap:4px}.field label{font-size:11px;color:var(--muted);font-weight:700}.span2{grid-column:1/-1}.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.toolbar{display:flex;gap:6px;flex-wrap:wrap}.notice{font-size:11px;color:#c3c9d8;background:#171a23;border:1px solid var(--line);padding:8px;border-radius:8px;margin-top:8px}.status{font-size:11px;color:var(--green);min-height:16px;margin-top:4px}.hidden{display:none!important}.medley{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}.medley:last-child{border:0}.small{font-size:11px}.footer{text-align:center;color:#626a7b;font-size:10px;margin-top:16px}
-.modal {position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);z-index:1001;width:90%;max-width:450px;padding:16px;box-shadow:0 24px 60px rgba(0,0,0,0.6);max-height:85vh;display:flex;flex-direction:column}
+:root{color-scheme:dark;--bg:#08090d;--panel:#12141b;--panel2:#191c25;--line:#292d39;--text:#f5f6fb;--muted:#9ba2b3;--blue:#78a7ff;--purple:#b6a0ff;--green:#80dfb0;--danger:#ff8e9a;--radius:10px}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#171b2a 0,var(--bg) 50%);color:var(--text);font:14px/1.3 -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;min-height:100vh}
+button,input,textarea,select{font:inherit}button{cursor:pointer;border:0;border-radius:8px;padding:6px 10px;background:var(--blue);color:#09101f;font-weight:700;transition:0.2s;font-size:13px}button.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}button.danger{background:#401b25;color:#ffdce0;border:1px solid #5a2531}button.danger:hover{background:#5a2531}
+input,textarea,select{width:100%;background:#0c0e14;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:8px;outline:none}input:focus,textarea:focus,select:focus{border-color:var(--blue)}textarea{min-height:140px;resize:vertical}.app{max-width:1400px;margin:auto;padding:8px 8px 60px}.top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.brand{display:flex;align-items:center;gap:8px}.menu-toggle{display:flex;align-items:center;justify-content:center;width:32px;height:32px;background:transparent;border:1px solid var(--line);color:var(--text);border-radius:8px;font-size:18px;cursor:pointer;transition:0.2s;margin-right:2px}.menu-toggle:hover{background:var(--panel2)}.logo{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;background:linear-gradient(145deg,#8db4ff,#b8a5ff);color:#101425;font-size:16px;font-weight:900}.eyebrow{color:var(--blue);font-size:9px;text-transform:uppercase;letter-spacing:.12em;font-weight:800}.brand h1{font-size:15px;margin:0;letter-spacing:-.04em}.brand p{margin:0;color:var(--muted);font-size:10px}.top-actions{display:flex;gap:4px;flex-wrap:wrap}.layout{display:block;max-width:100%}.panel{background:rgba(18,20,27,.88);border:1px solid var(--line);border-radius:var(--radius);padding:10px;box-shadow:0 18px 55px #0002}.panel h2{font-size:15px;margin:0 0 8px;letter-spacing:-.02em}.sidebar{position:fixed;top:0;left:0;height:100vh;width:280px;max-width:85vw;z-index:1000;transform:translateX(-100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);border-radius:0;border-right:1px solid var(--line);border-top:0;border-bottom:0;border-left:0;background:rgba(14,16,22,0.98);backdrop-filter:blur(10px);margin:0;overflow-y:auto;padding:16px 12px}.sidebar.open{transform:translateX(0)}
+.backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:999;opacity:0;pointer-events:none;transition:0.3s ease;backdrop-filter:blur(2px)}.backdrop.open{opacity:1;pointer-events:auto}.muted{color:var(--muted)}.search{margin-bottom:8px}.song-list{display:flex;flex-direction:column;gap:4px;overflow:auto}.song-item{text-align:left;width:100%;background:transparent;color:var(--text);border:1px solid transparent;padding:6px;border-radius:6px;cursor:pointer}.song-item:hover,.song-item.active{background:var(--panel2);border-color:var(--line)}.song-item strong{display:block;font-size:12px}.song-item small{color:var(--muted);font-size:10px}.maincol{display:flex;flex-direction:column;gap:8px;min-width:0;width:100%}.hero{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}.hero h2{font-size:18px;letter-spacing:-.04em;margin:0 0 2px}.chips{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}.chip{font-size:9px;padding:2px 5px;background:#202536;border:1px solid #30384d;border-radius:100px;color:#d6def5}.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}.tab{background:transparent;border:1px solid var(--line);color:var(--muted);padding:4px 8px;border-radius:4px; font-size: 11px; transition:0.2s}.tab.active{background:#202a42;border-color:#3e5e99;color:#e5edff}.section{margin:4px 0 8px; background: rgba(0,0,0,0.15); border-left: 2px solid #292d39; padding: 4px 6px; border-radius: 4px;}.section h3{margin:0 0 2px;color:var(--purple);font-size:9px;letter-spacing:.12em;text-transform:uppercase}.progression-row{display:flex;flex-wrap:wrap;gap:2px;align-items:stretch;margin-bottom:2px}.degree-card{min-width:24px;flex:1;background:#191c25;border:1px solid #30384d;border-radius:4px;text-align:center;display:flex;flex-direction:column;justify-content:center;position:relative;padding:2px;}.degree-card b{display:block;color:var(--blue);font-size:12px;}.degree-card small{color:var(--muted);font-size:8px}.repeat-badge{background:#202536;border:1px solid #3e5e99;color:var(--blue);display:grid;place-items:center;padding:0 3px;border-radius:4px;font-weight:800;font-size:9px}.section-summary{padding:4px 0;border-bottom:1px solid var(--line)}.empty{padding:12px 6px;text-align:center;color:var(--muted)}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.field{display:flex;flex-direction:column;gap:2px}.field label{font-size:10px;color:var(--muted);font-weight:700}.span2{grid-column:1/-1}.row{display:flex;gap:4px;flex-wrap:wrap;align-items:center}.toolbar{display:flex;gap:4px;flex-wrap:wrap}.notice{font-size:10px;color:#c3c9d8;background:#171a23;border:1px solid var(--line);padding:6px;border-radius:6px;margin-top:6px}.status{font-size:10px;color:var(--green);min-height:14px;margin-top:4px}.hidden{display:none!important}.medley{display:flex;justify-content:space-between;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--line)}.medley:last-child{border:0}.small{font-size:10px}.footer{text-align:center;color:#626a7b;font-size:9px;margin-top:12px}
+.modal {position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);z-index:1001;width:90%;max-width:400px;padding:12px;box-shadow:0 24px 60px rgba(0,0,0,0.6);max-height:85vh;display:flex;flex-direction:column}
 .modal-header {display:flex;justify-content:space-between;align-items:center}
-.modal-body {overflow-y:auto;padding-right:5px;margin-top:12px}
-.modal-body::-webkit-scrollbar {width:6px}
-.modal-body::-webkit-scrollbar-thumb {background:var(--line);border-radius:6px}
+.modal-body {overflow-y:auto;padding-right:4px;margin-top:8px}
 
-/* SUPER COMPACTO INLINE */
+/* ULTRA COMPACTO INLINE */
 .c-deg {
     color: var(--bg);
-    font-weight: 800;
-    font-size: 10px;
+    font-weight: 900;
+    font-size: 9.5px;
     background: var(--blue);
-    padding: 1px 3px;
-    border-radius: 4px;
-    margin: 0 1px;
+    padding: 0 4px;
+    border-radius: 3px;
+    margin: 0 2px;
     position: relative;
     top: -1px;
     display: inline-block;
-    line-height: 1;
+    line-height: 1.2;
 }
 .lyric-line {
     font-size: 13px;
-    line-height: 1.4;
-    margin-bottom: 1px;
+    line-height: 1.25;
+    margin-bottom: 0px;
     white-space: pre-wrap;
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
-@media(max-width:800px){.top-actions button{padding:6px 8px}.app{padding:10px 8px 60px}.hero h2{font-size:18px}.panel{padding:10px}.form-grid{grid-template-columns:1fr}.span2{grid-column:auto}}
+@media(max-width:800px){.top-actions button{padding:4px 6px}.app{padding:6px 4px 50px}.hero h2{font-size:16px}.panel{padding:8px}.form-grid{grid-template-columns:1fr}.span2{grid-column:auto}}
 </style>
 </head>
 <body>
@@ -47,17 +45,17 @@ input,textarea,select{width:100%;background:#0c0e14;color:var(--text);border:1px
 
 <div id="medleyModal" class="modal hidden">
     <div class="modal-header">
-        <h3 style="margin:0;">Adicionar ao Medley</h3>
-        <button class="menu-toggle" onclick="closeModal('medleyModal')" style="width:28px;height:28px;font-size:14px;margin:0;">✕</button>
+        <h3 style="margin:0; font-size:14px;">Adicionar ao Medley</h3>
+        <button class="menu-toggle" onclick="closeModal('medleyModal')" style="width:24px;height:24px;font-size:12px;margin:0;">✕</button>
     </div>
     <div class="modal-body" id="medleyResults"></div>
 </div>
 
 <div id="confirmModal" class="modal hidden">
     <div class="modal-header">
-        <h3 style="margin:0; color:var(--danger)">Excluir Cifra</h3>
+        <h3 style="margin:0; color:var(--danger); font-size:14px;">Excluir Cifra</h3>
     </div>
-    <div class="modal-body" id="confirmMessage" style="margin-bottom:16px;margin-top:8px;"></div>
+    <div class="modal-body" id="confirmMessage" style="margin-bottom:12px;margin-top:6px; font-size:12px;"></div>
     <div class="toolbar" style="justify-content:flex-end;">
         <button class="secondary" onclick="closeModal('confirmModal')">Cancelar</button>
         <button class="danger" id="confirmActionBtn">Sim, Excluir</button>
@@ -76,37 +74,36 @@ input,textarea,select{width:100%;background:#0c0e14;color:var(--text);border:1px
 
   <div class="layout">
     <aside class="sidebar" id="sidebar">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-        <h2 style="margin:0;">Biblioteca <span class="muted" id="songCount"></span></h2>
-        <button class="secondary" id="refreshBtn" style="padding:4px 8px;font-size:11px;">↻</button>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <h2 style="margin:0; font-size:14px;">Biblioteca <span class="muted" id="songCount"></span></h2>
+        <button class="secondary" id="refreshBtn" style="padding:4px 6px;font-size:10px;">↻</button>
       </div>
-      <input class="search" id="search" placeholder="Buscar música, artista ou tom…">
+      <input class="search" id="search" placeholder="Buscar música…">
       <div class="song-list" id="songList"><div class="empty">Conecte o backend para carregar suas músicas.</div></div>
     </aside>
 
     <main class="maincol">
       <section class="panel" id="viewer">
-        <div class="empty"><div style="font-size:28px">♫</div><strong>Seu próximo louvor começa aqui.</strong><p>Abra o menu lateral para selecionar uma música ou importe uma nova cifra.</p><button id="emptyNewBtn">Importar cifra</button></div>
+        <div class="empty"><div style="font-size:24px">♫</div><strong>Seu próximo louvor começa aqui.</strong><button id="emptyNewBtn" style="margin-top:10px;">Importar cifra</button></div>
       </section>
 
       <section class="panel hidden" id="editor">
-        <div class="hero"><div><div class="eyebrow">Adicionar ao songbook</div><h2>Importar cifra</h2><p class="muted small">Cole o conteúdo copiado do Cifra Club ou formatado pela IA.</p></div><button class="secondary" id="closeEditor">Fechar</button></div>
+        <div class="hero"><div><div class="eyebrow">Adicionar ao songbook</div><h2>Importar cifra</h2></div><button class="secondary" id="closeEditor">Fechar</button></div>
         <div class="form-grid">
-          <div class="field span2"><label for="raw">Cifra completa (Cole a cifra primeiro!)</label><textarea id="raw" placeholder="Cole aqui a cifra. O Tom e Capotraste serão detectados automaticamente..."></textarea></div>
-          <div class="field"><label for="title">Título (opcional)</label><input id="title" placeholder="Ex.: Toda Terra"></div>
-          <div class="field"><label for="artist">Artista (opcional)</label><input id="artist" placeholder="Ex.: Gabriela Rocha"></div>
-          <div class="field"><label for="key">Tom original (Som da música)</label><input id="key" placeholder="Ex.: Bb, E, C#m"></div>
-          <div class="field"><label for="capo">Capotraste sugerido (opcional)</label><input id="capo" type="number" min="0" max="12" placeholder="Ex.: 3"></div>
-          <div class="field span2"><label for="notes">Observações</label><input id="notes" placeholder="Ex.: versão ao vivo, dedilhado no início..."></div>
+          <div class="field span2"><label for="raw">Cifra completa</label><textarea id="raw" placeholder="Cole aqui a cifra..."></textarea></div>
+          <div class="field"><label for="title">Título</label><input id="title"></div>
+          <div class="field"><label for="artist">Artista</label><input id="artist"></div>
+          <div class="field"><label for="key">Tom original</label><input id="key"></div>
+          <div class="field"><label for="capo">Capotraste</label><input id="capo" type="number" min="0" max="12"></div>
+          <div class="field span2"><label for="notes">Observações</label><input id="notes"></div>
         </div>
-        <div class="notice">Dica: Ao passar o texto pela IA, peça para ela adicionar os tempos Ex: Bm(4). O sistema desenhará no canto de cada acorde.</div>
-        <div class="row" style="margin-top:10px"><button id="saveBtn">Salvar música</button><button class="secondary" id="previewBtn">Pré-visualizar</button></div>
+        <div class="row" style="margin-top:8px"><button id="saveBtn">Salvar música</button><button class="secondary" id="previewBtn">Pré-visualizar</button></div>
         <div class="status" id="editorStatus"></div>
-        <pre id="preview" class="hidden" style="white-space:pre-wrap;color:var(--muted)"></pre>
+        <pre id="preview" class="hidden" style="white-space:pre-wrap;color:var(--muted); font-size:11px;"></pre>
       </section>
     </main>
   </div>
-  <div class="footer">CIFRA INTELIGENTE · V2.0.1 · Layout Super Compacto</div>
+  <div class="footer">CIFRA INTELIGENTE · V2.0.2 · Ultra Compactação Ativada</div>
 </div>
 <script>
 const API_URL = 'https://script.google.com/macros/s/AKfycbzcvekR4cwaP3FsqkTA3RGguWlZ_Ks8fECJZfT7-XNgDv-kCW4Hallb9IuJiAwZOSgx/exec';
@@ -138,7 +135,7 @@ $('backdrop').onclick = () => {
 };
 
 async function api(action, data={}) {
-  if (!configured()) throw new Error('Configure API_URL no index.html com a URL /exec do Apps Script.');
+  if (!configured()) throw new Error('Configure a API_URL no topo do index.html');
   const response = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({action,...data}) });
   const json = await response.json();
   if (!json.ok) throw new Error(json.error || 'Erro na API');
@@ -241,15 +238,15 @@ function renderCapoVariations(originalKey) {
   const formatNote = n => { if(n === 'A#') return 'Bb'; if(n === 'D#') return 'Eb'; return n; };
 
   let chipsHtml = [];
-  if (capoI <= 5) chipsHtml.push(`<span class="chip" style="background:#202536; border-color:#3e5e99;">Tom ${formatNote(kI)} (1º) → Capo na ${capoI}ª</span>`);
-  if (capoIV <= 5) chipsHtml.push(`<span class="chip" style="background:#202536; border-color:#3e5e99;">Tom ${formatNote(kIV)} (4º) → Capo na ${capoIV}ª</span>`);
-  if (capoV <= 5) chipsHtml.push(`<span class="chip" style="background:#202536; border-color:#3e5e99;">Tom ${formatNote(kV)} (5º) → Capo na ${capoV}ª</span>`);
+  if (capoI <= 5) chipsHtml.push(`<span class="chip" style="background:#202536; border-color:#3e5e99;">Tom ${formatNote(kI)} (1º) → Capo ${capoI}ª</span>`);
+  if (capoIV <= 5) chipsHtml.push(`<span class="chip" style="background:#202536; border-color:#3e5e99;">Tom ${formatNote(kIV)} (4º) → Capo ${capoIV}ª</span>`);
+  if (capoV <= 5) chipsHtml.push(`<span class="chip" style="background:#202536; border-color:#3e5e99;">Tom ${formatNote(kV)} (5º) → Capo ${capoV}ª</span>`);
 
   if (chipsHtml.length === 0) return '';
 
   return `
-    <div style="background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:10px; margin-top:8px;">
-      <div style="font-size:10px; color:var(--blue); font-weight:800; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.08em;">💡 Sugestões de Capotraste</div>
+    <div style="background:var(--panel2); border:1px solid var(--line); border-radius:6px; padding:6px; margin-top:4px;">
+      <div style="font-size:9px; color:var(--blue); font-weight:800; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.08em;">💡 Sugestões de Capotraste</div>
       <div style="display:flex; gap:4px; flex-wrap:wrap;">
         ${chipsHtml.join('')}
       </div>
@@ -358,7 +355,7 @@ function getSectionSnippet(sec) {
     let words = text.split(/\s+/);
     let snippet = words.slice(0, 4).join(' ');
     if (words.length > 4) snippet += '...';
-    return ` <span class="muted" style="font-size:11px; font-weight:normal; text-transform:none; margin-left:6px; letter-spacing: normal;">(${esc(snippet)})</span>`;
+    return ` <span class="muted" style="font-size:10px; font-weight:normal; text-transform:none; margin-left:4px; letter-spacing: normal;">(${esc(snippet)})</span>`;
   }
   return '';
 }
@@ -468,9 +465,9 @@ function compactProgression(sec, key) {
   return finalSeqs;
 }
 
-// NOVO: Motor Inline Corrigido (Sem parênteses fantasma e mesclado)
+// NOVO: Motor Inline Definitivo
 function createCompactLine(chordsStr, lyricsStr, key, asDegrees) {
-    if (!chordsStr && !lyricsStr) return `<div style="height:4px"></div>`;
+    if (!chordsStr && !lyricsStr) return '';
     if (!chordsStr) return `<div class="lyric-line">${esc(lyricsStr)}</div>`;
 
     let matches = [];
@@ -483,29 +480,33 @@ function createCompactLine(chordsStr, lyricsStr, key, asDegrees) {
     if (matches.length === 0) return `<div class="lyric-line">${esc(lyricsStr)}</div>`;
 
     matches.forEach(m => {
-        // Limpa bordas (ex: remove "(" do início e ")" do final isolados)
-        let cleanToken = m.chord.replace(/^[\(\[\{]|[\)\]\}]$/g, ''); 
+        // Extrai a duração primeiro (para não perder o parênteses correto do (4) etc)
+        let durMatch = m.chord.match(/\((0\.5|1|1\.5|2|2\.5|3|4|5|6|7|8|12|16)\)/);
+        let durStr = durMatch ? durMatch[0] : '';
+        
+        let chordWithoutDur = m.chord.replace(/\((0\.5|1|1\.5|2|2\.5|3|4|5|6|7|8|12|16)\)/, '');
+        
+        // Agora sim limpa as pontas que o parser capturou errado, como (G) -> G
+        let cleanChord = chordWithoutDur.replace(/^[()[\]{}]+|[()[\]{}]+$/g, ''); 
         
         if (asDegrees) {
-            let clean = cleanToken.replace(/\((0\.5|1|1\.5|2|2\.5|3|4|5|6|7|8|12|16)\)/, '');
-            let parts = clean.split('/');
-            let rootDeg = chordDegree(parts[0], key);
-            let bassDeg = parts[1] ? '/' + chordDegree(parts[1], key).replace(/m$/, '') : '';
-            let durMatch = cleanToken.match(/\((0\.5|1|1\.5|2|2\.5|3|4|5|6|7|8|12|16)\)/);
-            
-            // Atribui o Grau final purinho, SEM forçar ")" fantasmas no fim.
-            m.display = rootDeg + bassDeg + (durMatch ? durMatch[0] : '');
+            if (!cleanChord) {
+                m.display = durStr;
+            } else {
+                let parts = cleanChord.split('/');
+                let rootDeg = chordDegree(parts[0], key);
+                let bassDeg = parts[1] ? '/' + chordDegree(parts[1], key).replace(/m$/, '') : '';
+                m.display = rootDeg + bassDeg + durStr;
+            }
         } else {
-            m.display = cleanToken;
+            m.display = cleanChord + durStr;
         }
     });
 
-    // Se só tiver cifra, desenha apenas a linha compacta
     if (!lyricsStr) {
-        return `<div class="lyric-line">` + matches.map(m => `<span class="c-deg">${esc(m.display)}</span>`).join(' ') + `</div>`;
+        return `<div class="lyric-line" style="margin-bottom: 2px;">` + matches.map(m => `<span class="c-deg">${esc(m.display)}</span>`).join(' ') + `</div>`;
     }
 
-    // Intersecção perfeita com a Letra (Truly Inline)
     let html = '';
     let lastIdx = 0;
     let paddedLyrics = lyricsStr.padEnd(chordsStr.length, ' ');
@@ -536,16 +537,15 @@ function renderSections(sections, mode, songObj, isMedley = false) {
   if (isMinorKey) {
      conversionKey = getRelativeMajor(tk);
      if (!isMedley) {
-        relativeWarning = `<div class="notice" style="margin-bottom: 8px; border-left: 4px solid var(--purple); background: #13111c;">💡 <strong>Tom Menor Detectado:</strong> A música está em <strong>${esc(tk)}</strong>. Graus convertidos para Relativo Maior (<strong>${esc(conversionKey)}</strong>).</div>`;
+        relativeWarning = `<div class="notice" style="margin-bottom: 6px; border-left: 4px solid var(--purple); background: #13111c;">💡 <strong>Tom Menor:</strong> A música está em <strong>${esc(tk)}</strong>. Convertido para Maior (<strong>${esc(conversionKey)}</strong>).</div>`;
      } else {
-         relativeWarning = `<div style="font-size:10px; color:var(--purple); margin-bottom:6px;">Convertido para Relativo Maior: ${esc(conversionKey)}</div>`;
+         relativeWarning = `<div style="font-size:9px; color:var(--purple); margin-bottom:4px;">Relativo: ${esc(conversionKey)}</div>`;
      }
   }
 
   const titleParts = songObj.titulo.split(/[/+]/).map(p => p.trim()).filter(p => p.length > 0);
   const isExtensiveMedley = titleParts.length >= 3;
   
-  // MODO: GRAUS (BLOCOS DE PROGRESSÃO ANTIGOS)
   if (mode === 'degrees') {
     const seen = new Set();
     const uniqueSections = sections.filter(sec => {
@@ -553,7 +553,7 @@ function renderSections(sections, mode, songObj, isMedley = false) {
       if(seen.has(n)) return false; seen.add(n); return true;
     });
 
-    return `${relativeWarning}<div class="section">${uniqueSections.map(sec=>{
+    return `${relativeWarning}<div>${uniqueSections.map(sec=>{
       const seqs = compactProgression(sec, conversionKey);
       let html = seqs.map((seq, seqIdx) => {
           let chunkHtml = seq.subChunks.map((chunk, chunkIdx) => {
@@ -562,14 +562,14 @@ function renderSections(sections, mode, songObj, isMedley = false) {
                   let color = chunk.isInterlude ? 'var(--purple)' : 'var(--muted)';
                   let fontStyle = chunk.isInterlude ? 'normal' : 'italic';
                   let quote = chunk.isInterlude ? '' : '"';
-                  snippetHtml = `<div style="font-size:10px; color:${color}; margin-bottom:2px; font-style:${fontStyle}; margin-top: 4px;">${quote}${esc(chunk.snippet)}${quote}</div>`;
+                  snippetHtml = `<div style="font-size:9px; color:${color}; margin-bottom:2px; font-style:${fontStyle}; margin-top: 2px;">${quote}${esc(chunk.snippet)}${quote}</div>`;
               }
               let degHtml = chunk.deg.map((d, i) => {
                   let m = d.match(/^(.*?)(\((0\.5|1|1\.5|2|2\.5|3|4|5|6|7|8|12|16)\))?$/);
                   let durText = m[3] || '';
-                  let pb = durText ? '12px' : '4px';
-                  let durHtml = durText ? `<span style="position:absolute; bottom:2px; right:4px; font-size:8px; color:var(--muted); font-weight:800; opacity:0.8;">${durText}</span>` : '';
-                  return `<div class="degree-card" style="flex:0 1 auto;padding:4px 4px ${pb} 4px;"><b style="font-size:13px;color:var(--blue);">${esc(m[1])}</b>${durHtml}</div>`;
+                  let pb = durText ? '10px' : '4px';
+                  let durHtml = durText ? `<span style="position:absolute; bottom:1px; right:3px; font-size:7px; color:var(--muted); font-weight:800; opacity:0.8;">${durText}</span>` : '';
+                  return `<div class="degree-card" style="flex:0 1 auto;padding:2px 2px ${pb} 2px;"><b style="font-size:11px;color:var(--blue);">${esc(m[1])}</b>${durHtml}</div>`;
               }).join('');
               let isLastChunk = chunkIdx === seq.subChunks.length - 1;
               let badge = (isLastChunk && seq.count > 1) ? `<div class="repeat-badge" title="Toda a sequência repete">${seq.count}x</div>` : '';
@@ -577,47 +577,54 @@ function renderSections(sections, mode, songObj, isMedley = false) {
           }).join('');
 
           let containerStyle = (seq.subChunks.length > 1 && seq.count > 1) 
-              ? 'background: rgba(0,0,0,0.2); border-left: 2px solid #3e5e99; padding-left: 6px; margin: 6px 0; border-radius: 4px; padding-bottom: 2px;' 
-              : 'margin-bottom: 8px;';
+              ? 'background: rgba(0,0,0,0.2); border-left: 2px solid #3e5e99; padding-left: 4px; margin: 4px 0; border-radius: 4px; padding-bottom: 2px;' 
+              : 'margin-bottom: 4px;';
 
           return `<div style="${containerStyle}">${chunkHtml}</div>`;
       }).join('');
 
-      let extraText = isExtensiveMedley ? '<span class="muted" style="font-size:9px; margin-left:4px; font-weight:normal;">(Medley Fracionado)</span>' : getSectionSnippet(sec);
-      return `<div class="section-summary"><h3 style="display:flex;align-items:center;flex-wrap:wrap;margin-bottom:6px;">${esc(sec.name)} ${extraText}</h3>${html || '<p class="muted">Nenhum acorde isolado.</p>'}</div>`;
+      let extraText = isExtensiveMedley ? '<span class="muted" style="font-size:8px; margin-left:4px; font-weight:normal;">(Fracionado)</span>' : getSectionSnippet(sec);
+      return `<div class="section"><h3 style="display:flex;align-items:center;flex-wrap:wrap;">${esc(sec.name)} ${extraText}</h3>${html || '<p class="muted">Vazio.</p>'}</div>`;
 
     }).join('')}</div>`;
   }
   
-  // MODOS INLINE: LETRA + GRAUS ou LETRA + ACORDES (Super Compacto V2.0.1)
   if (mode === 'inline-degrees' || mode === 'inline-chords') {
       const asDegrees = (mode === 'inline-degrees');
-      return `${relativeWarning}<div class="section">${sections.map(sec => {
+      return `${relativeWarning}<div>${sections.map(sec => {
           
           let mergedLines = [];
+          let pendingChords = null;
+          
+          // O CÉREBRO DA MESCLAGEM AGRESSIVA V2.0.2: Ignora linhas em branco para garantir o inline perfeito!
           for (let i = 0; i < sec.lines.length; i++) {
-              let current = sec.lines[i];
-              let next = sec.lines[i+1];
+              let l = sec.lines[i];
+              let hasChords = l.chords && l.chords.trim().length > 0;
+              let hasLyric = l.lyric && l.lyric.trim().length > 0;
               
-              // Cérebro da mesclagem (Intersecção Verdadeira): 
-              // Se a linha atual só tem cifra e a debaixo só tem letra, elas viram UMA SÓ!
-              if (current.chords && !current.lyric && next && !next.chords && next.lyric) {
-                  mergedLines.push({ chords: current.chords, lyric: next.lyric });
-                  i++; // Pula a linha da letra pois já fundimos
-              } else {
-                  mergedLines.push(current);
+              if (!hasChords && !hasLyric) continue; // Pula as linhas vazias que antes "quebravam" a mesclagem
+              
+              if (hasChords && !hasLyric) {
+                  if (pendingChords) mergedLines.push({ chords: pendingChords, lyric: '' });
+                  pendingChords = l.chords;
+              } 
+              else if (!hasChords && hasLyric) {
+                  mergedLines.push({ chords: pendingChords || '', lyric: l.lyric });
+                  pendingChords = null;
+              }
+              else {
+                  if (pendingChords) mergedLines.push({ chords: pendingChords, lyric: '' });
+                  mergedLines.push(l);
+                  pendingChords = null;
               }
           }
+          if (pendingChords) mergedLines.push({ chords: pendingChords, lyric: '' });
 
           let linesHtml = mergedLines.map(l => {
               return createCompactLine(l.chords, l.lyric, conversionKey, asDegrees);
           }).join('');
           
-          let secTitle = `<h3 style="margin: 0 0 2px; color: var(--purple); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; display:flex; align-items:center;">
-             ${esc(sec.name)}
-          </h3>`;
-          
-          return `<div style="margin-bottom: 8px; background: rgba(0,0,0,0.1); border-left: 2px solid #292d39; padding-left: 8px; border-radius: 4px;">${secTitle}${linesHtml}</div>`;
+          return `<div class="section"><h3>${esc(sec.name)}</h3>${linesHtml}</div>`;
       }).join('')}</div>`;
   }
 }
@@ -628,18 +635,17 @@ function renderSong(song) {
   const writtenKey = getWrittenKey(song.tomOriginal, song.capotrasteSugerido);
   const tomText = song.tomOriginal ? `Tom: ${esc(song.tomOriginal)}` : 'Tom —';
   const capoText = song.capotrasteSugerido ? `Capo: ${esc(song.capotrasteSugerido)}` : '';
-  const writtenText = (writtenKey && writtenKey !== song.tomOriginal) ? `Tom Tocado: ${esc(writtenKey)}` : '';
+  const writtenText = (writtenKey && writtenKey !== song.tomOriginal) ? `Tocado: ${esc(writtenKey)}` : '';
   const capoVariationsHtml = renderCapoVariations(song.tomOriginal);
   
   $('viewer').innerHTML = `
     <div class="hero" style="flex-direction: column; width: 100%;">
       <div id="medleyHeader" class="hidden"></div>
       
-      <div id="viewModeHero" style="display: flex; justify-content: space-between; width: 100%; align-items: flex-start; gap: 10px; flex-wrap: wrap;">
+      <div id="viewModeHero" style="display: flex; justify-content: space-between; width: 100%; align-items: flex-start; gap: 6px; flex-wrap: wrap;">
         <div style="flex: 1 1 min-content; min-width: 150px;">
-          <div class="eyebrow">Modo palco · cifra salva</div>
-          <h2>${esc(song.titulo)}</h2>
-          <div class="muted" style="font-size:12px;">${esc(song.artista||'Artista não informado')}</div>
+          <h2 style="font-size: 16px;">${esc(song.titulo)}</h2>
+          <div class="muted" style="font-size:11px;">${esc(song.artista||'Artista não informado')}</div>
           <div class="chips">
             <span class="chip">${tomText}</span>
             ${capoText ? `<span class="chip">${capoText}</span>` : ''}
@@ -648,14 +654,14 @@ function renderSong(song) {
         </div>
 
         <div class="toolbar" id="viewToolbar" style="flex: 0 0 auto;">
-          <button class="secondary" id="editBtn" style="padding: 8px; display: grid; place-items: center; border-radius: 8px;" title="Editar">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+          <button class="secondary" id="editBtn" style="padding: 6px; display: grid; place-items: center; border-radius: 6px;" title="Editar">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
           </button>
-          <button class="secondary" id="medleyBtn" style="font-size:12px;">Medleys</button>
+          <button class="secondary" id="medleyBtn" style="font-size:11px;">Medleys</button>
         </div>
       </div>
 
-      <div id="editModeHero" class="hidden" style="width: 100%; display:flex; flex-direction:column; gap:8px;">
+      <div id="editModeHero" class="hidden" style="width: 100%; display:flex; flex-direction:column; gap:6px;">
            <div class="field"><label>Título</label><input id="editTitle" value="${esc(song.titulo)}" placeholder="Ex: Toda Terra"></div>
            <div class="field"><label>Artista</label><input id="editArtist" value="${esc(song.artista)}" placeholder="Ex: Gabriela Rocha"></div>
            <div class="row">
@@ -666,19 +672,18 @@ function renderSong(song) {
              <label>Conteúdo da Cifra</label>
              <textarea id="editRaw" style="min-height: 200px; font-family: monospace; white-space: pre-wrap;">${esc(song.cifraOriginal)}</textarea>
            </div>
-           <div class="toolbar" id="editToolbar" style="margin-top: 4px; width: 100%; justify-content: flex-end; padding-top: 8px; border-top: 1px solid var(--line);">
+           <div class="toolbar" id="editToolbar" style="margin-top: 4px; width: 100%; justify-content: flex-end; padding-top: 6px; border-top: 1px solid var(--line);">
              <button class="danger" id="deleteBtn" style="margin-right: auto;">Excluir</button>
              <button class="secondary" id="cancelEditBtn">Cancelar</button>
-             <button id="saveEditBtn">Salvar Alterações</button>
+             <button id="saveEditBtn">Salvar</button>
           </div>
       </div>
     </div>
     
     <div id="infoWrapper">${capoVariationsHtml}</div>
 
-    <!-- Novas Abas Inteligentes -->
-    <div class="tabs" style="margin-top:10px" id="globalTabs">
-      <button class="tab" data-view="inline-degrees">Letra + Graus (Compacto)</button>
+    <div class="tabs" id="globalTabs">
+      <button class="tab" data-view="inline-degrees">Letra + Graus</button>
       <button class="tab" data-view="inline-chords">Letra + Acordes</button>
       <button class="tab" data-view="degrees">Graus (Blocos)</button>
     </div>
@@ -713,7 +718,7 @@ function renderSong(song) {
   };
 
   $('saveEditBtn').onclick = async () => {
-      const btn = $('saveEditBtn'); btn.textContent = 'Salvando...'; btn.disabled = true;
+      const btn = $('saveEditBtn'); btn.textContent = '...'; btn.disabled = true;
       try {
           const updated = await api('updateSong', {
               song: {
@@ -726,17 +731,17 @@ function renderSong(song) {
           if(idx > -1) songs[idx] = updated;
           renderList(); renderSong(await api('getSong', {id: updated.id})); 
       } catch(e) {
-          alert('Erro ao salvar: ' + e.message); btn.textContent = 'Salvar Alterações'; btn.disabled = false;
+          alert('Erro ao salvar: ' + e.message); btn.textContent = 'Salvar'; btn.disabled = false;
       }
   };
   
   $('deleteBtn').onclick = () => {
-      $('confirmMessage').innerHTML = `Tem certeza que deseja excluir a cifra <strong>${esc(song.titulo)}</strong> da sua biblioteca?<br>Essa ação não pode ser desfeita.`;
+      $('confirmMessage').innerHTML = `Excluir a cifra <strong>${esc(song.titulo)}</strong>?`;
       $('confirmActionBtn').onclick = async () => {
-          const btn = $('confirmActionBtn'); btn.textContent = 'Excluindo...'; btn.disabled = true;
+          const btn = $('confirmActionBtn'); btn.textContent = '...'; btn.disabled = true;
           try {
               await api('deleteSong', { id: song.id }); currentSong = null;
-              $('viewer').innerHTML = '<div class="empty"><div style="font-size:34px">♫</div><strong>Música excluída.</strong></div>';
+              $('viewer').innerHTML = '<div class="empty"><div style="font-size:24px">♫</div><strong>Música excluída.</strong></div>';
               closeModal('confirmModal'); await loadSongs();
           } catch(e) { alert('Erro: ' + e.message); } 
           finally { btn.textContent = 'Sim, Excluir'; btn.disabled = false; }
@@ -758,7 +763,7 @@ function updateTabsState() {
 }
 
 async function loadSongs() {
-  if(!configured()) { $('songList').innerHTML='<div class="empty">Configure a URL do backend no index.html para ativar a biblioteca.</div>';return; }
+  if(!configured()) return;
   try { songs=await api('listSongs',{query:$('search').value}); renderList(); }
   catch(e){$('songList').innerHTML=`<div class="empty">${esc(e.message)}</div>`;}
 }
@@ -777,7 +782,7 @@ function renderList() {
 }
 
 async function loadMedleys() {
-  $('medleyResults').innerHTML = '<div class="muted">Analisando sua biblioteca…</div>';
+  $('medleyResults').innerHTML = '<div class="muted">Analisando…</div>';
   openModal('medleyModal');
   
   try {
@@ -793,13 +798,13 @@ async function loadMedleys() {
         <div>
           <strong>${esc(m.titulo)}</strong>
           <div class="small muted">${esc(m.artista||'')}</div>
-          <div class="small" style="color:var(--${m.isMatch ? 'green' : 'muted'}); margin-top:3px; font-weight: 500;">
+          <div class="small" style="color:var(--${m.isMatch ? 'green' : 'muted'}); margin-top:2px; font-weight: 500;">
             ${m.isMatch ? '✓ ' : '⚠ '} ${esc(m.motivo)}
           </div>
         </div>
         <button class="secondary small" onclick="addToMedley(event, '${m.id}')" style="white-space:nowrap; padding:4px 8px;">Adicionar</button>
       </div>
-    `).join('') : '<div class="muted small" style="padding:10px 0;">Não há mais músicas para adicionar.</div>';
+    `).join('') : '<div class="muted small" style="padding:8px 0;">Não há mais músicas para adicionar.</div>';
   } catch(e) { $('medleyResults').textContent=e.message; }
 }
 
@@ -829,29 +834,29 @@ function renderMedleyView() {
     let medleyHeader = $('medleyHeader');
     medleyHeader.classList.remove('hidden');
     medleyHeader.innerHTML = `
-      <div style="display:flex; justify-content:space-between; width:100%; align-items:flex-start; gap: 10px; margin-bottom: 8px;">
+      <div style="display:flex; justify-content:space-between; width:100%; align-items:flex-start; gap: 8px; margin-bottom: 6px;">
           <div style="flex-grow:1;">
             <div class="eyebrow" style="color:var(--green); margin-bottom: 2px;">Modo Medley (Lado a Lado)</div>
-            <h2 style="font-size:18px; line-height:1.2; margin:0;">
-              ${medleySongs.map(s => esc(s.titulo)).join(' <span class="muted" style="font-weight:400; font-size:14px;">+</span> ')}
+            <h2 style="font-size:16px; line-height:1.2; margin:0;">
+              ${medleySongs.map(s => esc(s.titulo)).join(' <span class="muted" style="font-weight:400; font-size:13px;">+</span> ')}
             </h2>
           </div>
-          <button class="menu-toggle" onclick="exitMedley()" title="Sair do Medley" style="width:32px; height:32px; flex-shrink:0; margin:0; background: var(--panel2);">✕</button>
+          <button class="menu-toggle" onclick="exitMedley()" title="Sair do Medley" style="width:28px; height:28px; flex-shrink:0; margin:0; background: var(--panel2);">✕</button>
       </div>
     `;
 
     let columnsHtml = medleySongs.map((song, idx) => {
         const sec = localParse(song.cifraOriginal || '');
         return `
-        <div style="min-width:280px; flex: 1 1 0; background: var(--panel2); border: 1px solid var(--line); border-radius: 10px; padding: 10px; display:flex; flex-direction:column;">
-          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px; border-bottom:1px solid var(--line); padding-bottom:6px;">
+        <div style="min-width:250px; flex: 1 1 0; background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px; display:flex; flex-direction:column;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px; border-bottom:1px solid var(--line); padding-bottom:4px;">
               <div>
-                <h3 style="margin:0; color:var(--${idx % 2 === 0 ? 'blue' : 'purple'}); font-size:13px; margin-bottom:2px;">${idx + 1}. ${esc(song.titulo)}</h3>
-                <div style="font-size:10px; color:var(--muted);">${esc(song.tomOriginal||'')} ${song.capotrasteSugerido ? `· Capo ${song.capotrasteSugerido}` : ''}</div>
+                <h3 style="margin:0; color:var(--${idx % 2 === 0 ? 'blue' : 'purple'}); font-size:12px; margin-bottom:2px;">${idx + 1}. ${esc(song.titulo)}</h3>
+                <div style="font-size:9px; color:var(--muted);">${esc(song.tomOriginal||'')} ${song.capotrasteSugerido ? `· Capo ${song.capotrasteSugerido}` : ''}</div>
               </div>
-              ${idx > 0 ? `<button onclick="removeFromMedley(${idx})" style="background:transparent; border:none; color:var(--muted); padding:2px; font-size:14px; cursor:pointer;" title="Remover Música">✕</button>` : ''}
+              ${idx > 0 ? `<button onclick="removeFromMedley(${idx})" style="background:transparent; border:none; color:var(--muted); padding:2px; font-size:12px; cursor:pointer;" title="Remover Música">✕</button>` : ''}
           </div>
-          <div style="flex-grow:1; font-size: 13px;">
+          <div style="flex-grow:1;">
               ${renderSections(sec, currentViewMode, song, true)}
           </div>
         </div>
@@ -859,11 +864,11 @@ function renderMedleyView() {
     }).join('');
 
     $('songContent').innerHTML = `
-      <div style="display:flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; align-items: stretch; margin-top: 8px;">
+      <div style="display:flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; align-items: stretch; margin-top: 6px;">
         ${columnsHtml}
-        <button onclick="loadMedleys()" class="secondary" style="min-width:120px; display:flex; flex-direction:column; align-items:center; justify-content:center; border:1px dashed var(--line); gap:6px; border-radius:10px; background: transparent;">
-            <span style="font-size:24px; font-weight: 300; color:var(--muted);">+</span>
-            <span style="color:var(--muted); font-size: 11px;">Adicionar</span>
+        <button onclick="loadMedleys()" class="secondary" style="min-width:100px; display:flex; flex-direction:column; align-items:center; justify-content:center; border:1px dashed var(--line); gap:4px; border-radius:8px; background: transparent;">
+            <span style="font-size:20px; font-weight: 300; color:var(--muted);">+</span>
+            <span style="color:var(--muted); font-size: 10px;">Adicionar</span>
         </button>
       </div>
     `;
@@ -895,7 +900,7 @@ $('saveBtn').onclick=async()=>{
   const status=$('editorStatus');
   const song={titulo:$('title').value,artista:$('artist').value,tomOriginal:$('key').value,bpm:'',compasso:'',capotrasteSugerido:$('capo').value,cifraOriginal:$('raw').value,observacoes:$('notes').value};
   try {
-    notify(status,'Salvando música...');
+    notify(status,'Salvando...');
     const result=await api('importSong',{song});
     notify(status,`Salvo: ${result.titulo}. Carregando...`);
     await loadSongs(); renderSong(await api('getSong',{id:result.id})); closeEditor();
