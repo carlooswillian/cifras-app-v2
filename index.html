@@ -6,40 +6,40 @@
 <meta name="theme-color" content="#08090d">
 <title>Cifra Inteligente v2</title>
 <style>
-:root{color-scheme:dark;--bg:#08090d;--panel:#12141b;--panel2:#191c25;--line:#292d39;--text:#f5f6fb;--muted:#9ba2b3;--blue:#78a7ff;--purple:#b6a0ff;--green:#80dfb0;--danger:#ff8e9a;--radius:16px}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#171b2a 0,var(--bg) 50%);color:var(--text);font:15px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;min-height:100vh}
-button,input,textarea,select{font:inherit}button{cursor:pointer;border:0;border-radius:12px;padding:10px 14px;background:var(--blue);color:#09101f;font-weight:700;transition:0.2s}button.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}button.danger{background:#401b25;color:#ffdce0;border:1px solid #5a2531}button.danger:hover{background:#5a2531}
-input,textarea,select{width:100%;background:#0c0e14;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px;outline:none}input:focus,textarea:focus,select:focus{border-color:var(--blue)}textarea{min-height:190px;resize:vertical}.app{max-width:1400px;margin:auto;padding:16px 16px 90px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}.brand{display:flex;align-items:center;gap:10px}.menu-toggle{display:flex;align-items:center;justify-content:center;width:40px;height:40px;background:transparent;border:1px solid var(--line);color:var(--text);border-radius:10px;font-size:22px;cursor:pointer;transition:0.2s;margin-right:4px}.menu-toggle:hover{background:var(--panel2)}.logo{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(145deg,#8db4ff,#b8a5ff);color:#101425;font-size:20px;font-weight:900}.eyebrow{color:var(--blue);font-size:11px;text-transform:uppercase;letter-spacing:.16em;font-weight:800}.brand h1{font-size:18px;margin:0;letter-spacing:-.04em}.brand p{margin:0;color:var(--muted);font-size:12px}.top-actions{display:flex;gap:8px;flex-wrap:wrap}.layout{display:block;max-width:100%}.panel{background:rgba(18,20,27,.88);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:0 18px 55px #0002}.panel h2{font-size:17px;margin:0 0 14px;letter-spacing:-.02em}.sidebar{position:fixed;top:0;left:0;height:100vh;width:320px;max-width:85vw;z-index:1000;transform:translateX(-100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);border-radius:0;border-right:1px solid var(--line);border-top:0;border-bottom:0;border-left:0;background:rgba(14,16,22,0.98);backdrop-filter:blur(10px);margin:0;overflow-y:auto;padding:22px 18px}.sidebar.open{transform:translateX(0)}
-.backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:999;opacity:0;pointer-events:none;transition:0.3s ease;backdrop-filter:blur(2px)}.backdrop.open{opacity:1;pointer-events:auto}.muted{color:var(--muted)}.search{margin-bottom:12px}.song-list{display:flex;flex-direction:column;gap:7px;overflow:auto}.song-item{text-align:left;width:100%;background:transparent;color:var(--text);border:1px solid transparent;padding:10px;border-radius:10px;cursor:pointer}.song-item:hover,.song-item.active{background:var(--panel2);border-color:var(--line)}.song-item strong{display:block;font-size:14px}.song-item small{color:var(--muted)}.maincol{display:flex;flex-direction:column;gap:14px;min-width:0;width:100%}.hero{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.hero h2{font-size:23px;letter-spacing:-.045em;margin:3px 0}.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.chip{font-size:11px;padding:4px 8px;background:#202536;border:1px solid #30384d;border-radius:100px;color:#d6def5}.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}.tab{background:transparent;border:1px solid var(--line);color:var(--muted);padding:8px 10px;border-radius: 8px; font-size: 13px; transition:0.2s}.tab.active{background:#202a42;border-color:#3e5e99;color:#e5edff}.section{margin:12px 0 16px}.section h3{margin:0 0 6px;color:var(--purple);font-size:12px;letter-spacing:.12em;text-transform:uppercase}.progression-row{display:flex;flex-wrap:wrap;gap:4px;align-items:stretch;margin-bottom:6px}.degree-card{min-width:32px;flex:1;background:#191c25;border:1px solid #30384d;border-radius:8px;text-align:center;display:flex;flex-direction:column;justify-content:center;position:relative}.degree-card b{display:block;color:var(--blue)}.degree-card small{color:var(--muted);font-size:10px}.repeat-badge{background:#202536;border:1px solid #3e5e99;color:var(--blue);display:grid;place-items:center;padding:0 6px;border-radius:8px;font-weight:800;font-size:11px}.section-summary{padding:10px 0;border-bottom:1px solid var(--line)}.empty{padding:20px 10px;text-align:center;color:var(--muted)}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.field{display:flex;flex-direction:column;gap:4px}.field label{font-size:12px;color:var(--muted);font-weight:700}.span2{grid-column:1/-1}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.toolbar{display:flex;gap:8px;flex-wrap:wrap}.notice{font-size:12px;color:#c3c9d8;background:#171a23;border:1px solid var(--line);padding:10px;border-radius:10px;margin-top:10px}.status{font-size:12px;color:var(--green);min-height:18px;margin-top:6px}.hidden{display:none!important}.medley{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}.medley:last-child{border:0}.small{font-size:12px}.footer{text-align:center;color:#626a7b;font-size:11px;margin-top:20px}
-.modal {position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);z-index:1001;width:90%;max-width:450px;padding:20px;box-shadow:0 24px 60px rgba(0,0,0,0.6);max-height:85vh;display:flex;flex-direction:column}
+:root{color-scheme:dark;--bg:#08090d;--panel:#12141b;--panel2:#191c25;--line:#292d39;--text:#f5f6fb;--muted:#9ba2b3;--blue:#78a7ff;--purple:#b6a0ff;--green:#80dfb0;--danger:#ff8e9a;--radius:12px}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#171b2a 0,var(--bg) 50%);color:var(--text);font:14px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;min-height:100vh}
+button,input,textarea,select{font:inherit}button{cursor:pointer;border:0;border-radius:10px;padding:8px 12px;background:var(--blue);color:#09101f;font-weight:700;transition:0.2s}button.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}button.danger{background:#401b25;color:#ffdce0;border:1px solid #5a2531}button.danger:hover{background:#5a2531}
+input,textarea,select{width:100%;background:#0c0e14;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:10px;outline:none}input:focus,textarea:focus,select:focus{border-color:var(--blue)}textarea{min-height:160px;resize:vertical}.app{max-width:1400px;margin:auto;padding:12px 12px 80px}.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.brand{display:flex;align-items:center;gap:10px}.menu-toggle{display:flex;align-items:center;justify-content:center;width:36px;height:36px;background:transparent;border:1px solid var(--line);color:var(--text);border-radius:8px;font-size:20px;cursor:pointer;transition:0.2s;margin-right:2px}.menu-toggle:hover{background:var(--panel2)}.logo{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(145deg,#8db4ff,#b8a5ff);color:#101425;font-size:18px;font-weight:900}.eyebrow{color:var(--blue);font-size:10px;text-transform:uppercase;letter-spacing:.12em;font-weight:800}.brand h1{font-size:16px;margin:0;letter-spacing:-.04em}.brand p{margin:0;color:var(--muted);font-size:11px}.top-actions{display:flex;gap:6px;flex-wrap:wrap}.layout{display:block;max-width:100%}.panel{background:rgba(18,20,27,.88);border:1px solid var(--line);border-radius:var(--radius);padding:12px;box-shadow:0 18px 55px #0002}.panel h2{font-size:16px;margin:0 0 10px;letter-spacing:-.02em}.sidebar{position:fixed;top:0;left:0;height:100vh;width:300px;max-width:85vw;z-index:1000;transform:translateX(-100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);border-radius:0;border-right:1px solid var(--line);border-top:0;border-bottom:0;border-left:0;background:rgba(14,16,22,0.98);backdrop-filter:blur(10px);margin:0;overflow-y:auto;padding:20px 16px}.sidebar.open{transform:translateX(0)}
+.backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:999;opacity:0;pointer-events:none;transition:0.3s ease;backdrop-filter:blur(2px)}.backdrop.open{opacity:1;pointer-events:auto}.muted{color:var(--muted)}.search{margin-bottom:10px}.song-list{display:flex;flex-direction:column;gap:5px;overflow:auto}.song-item{text-align:left;width:100%;background:transparent;color:var(--text);border:1px solid transparent;padding:8px;border-radius:8px;cursor:pointer}.song-item:hover,.song-item.active{background:var(--panel2);border-color:var(--line)}.song-item strong{display:block;font-size:13px}.song-item small{color:var(--muted);font-size:11px}.maincol{display:flex;flex-direction:column;gap:10px;min-width:0;width:100%}.hero{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.hero h2{font-size:20px;letter-spacing:-.04em;margin:2px 0}.chips{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}.chip{font-size:10px;padding:3px 6px;background:#202536;border:1px solid #30384d;border-radius:100px;color:#d6def5}.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px}.tab{background:transparent;border:1px solid var(--line);color:var(--muted);padding:6px 8px;border-radius:6px; font-size: 12px; transition:0.2s}.tab.active{background:#202a42;border-color:#3e5e99;color:#e5edff}.section{margin:8px 0 12px}.section h3{margin:0 0 4px;color:var(--purple);font-size:10px;letter-spacing:.12em;text-transform:uppercase}.progression-row{display:flex;flex-wrap:wrap;gap:4px;align-items:stretch;margin-bottom:4px}.degree-card{min-width:28px;flex:1;background:#191c25;border:1px solid #30384d;border-radius:6px;text-align:center;display:flex;flex-direction:column;justify-content:center;position:relative}.degree-card b{display:block;color:var(--blue);font-size:13px;}.degree-card small{color:var(--muted);font-size:9px}.repeat-badge{background:#202536;border:1px solid #3e5e99;color:var(--blue);display:grid;place-items:center;padding:0 4px;border-radius:6px;font-weight:800;font-size:10px}.section-summary{padding:8px 0;border-bottom:1px solid var(--line)}.empty{padding:16px 8px;text-align:center;color:var(--muted)}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.field{display:flex;flex-direction:column;gap:4px}.field label{font-size:11px;color:var(--muted);font-weight:700}.span2{grid-column:1/-1}.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.toolbar{display:flex;gap:6px;flex-wrap:wrap}.notice{font-size:11px;color:#c3c9d8;background:#171a23;border:1px solid var(--line);padding:8px;border-radius:8px;margin-top:8px}.status{font-size:11px;color:var(--green);min-height:16px;margin-top:4px}.hidden{display:none!important}.medley{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}.medley:last-child{border:0}.small{font-size:11px}.footer{text-align:center;color:#626a7b;font-size:10px;margin-top:16px}
+.modal {position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);z-index:1001;width:90%;max-width:450px;padding:16px;box-shadow:0 24px 60px rgba(0,0,0,0.6);max-height:85vh;display:flex;flex-direction:column}
 .modal-header {display:flex;justify-content:space-between;align-items:center}
-.modal-body {overflow-y:auto;padding-right:5px;margin-top:14px}
+.modal-body {overflow-y:auto;padding-right:5px;margin-top:12px}
 .modal-body::-webkit-scrollbar {width:6px}
 .modal-body::-webkit-scrollbar-thumb {background:var(--line);border-radius:6px}
 
-/* NOVO: Motor de Acordes Inline (Compacto) */
+/* SUPER COMPACTO INLINE */
 .c-deg {
-    color: var(--blue);
+    color: var(--bg);
     font-weight: 800;
-    font-size: 11px;
-    background: #191d28;
-    padding: 1px 4px;
+    font-size: 10px;
+    background: var(--blue);
+    padding: 1px 3px;
     border-radius: 4px;
-    margin: 0 2px;
-    border: 1px solid #293043;
-    vertical-align: super;
-    line-height: 1;
+    margin: 0 1px;
+    position: relative;
+    top: -1px;
     display: inline-block;
+    line-height: 1;
 }
 .lyric-line {
-    font-size: 14px;
-    line-height: 1.8;
-    margin-bottom: 2px;
+    font-size: 13px;
+    line-height: 1.4;
+    margin-bottom: 1px;
     white-space: pre-wrap;
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
-@media(max-width:800px){.top-actions button{padding:8px 10px}.app{padding:12px 10px 60px}.hero h2{font-size:20px}.panel{padding:12px}.form-grid{grid-template-columns:1fr}.span2{grid-column:auto}}
+@media(max-width:800px){.top-actions button{padding:6px 8px}.app{padding:10px 8px 60px}.hero h2{font-size:18px}.panel{padding:10px}.form-grid{grid-template-columns:1fr}.span2{grid-column:auto}}
 </style>
 </head>
 <body>
@@ -48,7 +48,7 @@ input,textarea,select{width:100%;background:#0c0e14;color:var(--text);border:1px
 <div id="medleyModal" class="modal hidden">
     <div class="modal-header">
         <h3 style="margin:0;">Adicionar ao Medley</h3>
-        <button class="menu-toggle" onclick="closeModal('medleyModal')" style="width:32px;height:32px;font-size:16px;margin:0;">✕</button>
+        <button class="menu-toggle" onclick="closeModal('medleyModal')" style="width:28px;height:28px;font-size:14px;margin:0;">✕</button>
     </div>
     <div class="modal-body" id="medleyResults"></div>
 </div>
@@ -57,7 +57,7 @@ input,textarea,select{width:100%;background:#0c0e14;color:var(--text);border:1px
     <div class="modal-header">
         <h3 style="margin:0; color:var(--danger)">Excluir Cifra</h3>
     </div>
-    <div class="modal-body" id="confirmMessage" style="margin-bottom:20px;margin-top:10px;"></div>
+    <div class="modal-body" id="confirmMessage" style="margin-bottom:16px;margin-top:8px;"></div>
     <div class="toolbar" style="justify-content:flex-end;">
         <button class="secondary" onclick="closeModal('confirmModal')">Cancelar</button>
         <button class="danger" id="confirmActionBtn">Sim, Excluir</button>
@@ -76,9 +76,9 @@ input,textarea,select{width:100%;background:#0c0e14;color:var(--text);border:1px
 
   <div class="layout">
     <aside class="sidebar" id="sidebar">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
         <h2 style="margin:0;">Biblioteca <span class="muted" id="songCount"></span></h2>
-        <button class="secondary" id="refreshBtn" style="padding:6px 10px;font-size:12px;">↻</button>
+        <button class="secondary" id="refreshBtn" style="padding:4px 8px;font-size:11px;">↻</button>
       </div>
       <input class="search" id="search" placeholder="Buscar música, artista ou tom…">
       <div class="song-list" id="songList"><div class="empty">Conecte o backend para carregar suas músicas.</div></div>
@@ -86,7 +86,7 @@ input,textarea,select{width:100%;background:#0c0e14;color:var(--text);border:1px
 
     <main class="maincol">
       <section class="panel" id="viewer">
-        <div class="empty"><div style="font-size:34px">♫</div><strong>Seu próximo louvor começa aqui.</strong><p>Abra o menu lateral para selecionar uma música ou importe uma nova cifra.</p><button id="emptyNewBtn">Importar cifra</button></div>
+        <div class="empty"><div style="font-size:28px">♫</div><strong>Seu próximo louvor começa aqui.</strong><p>Abra o menu lateral para selecionar uma música ou importe uma nova cifra.</p><button id="emptyNewBtn">Importar cifra</button></div>
       </section>
 
       <section class="panel hidden" id="editor">
@@ -100,24 +100,21 @@ input,textarea,select{width:100%;background:#0c0e14;color:var(--text);border:1px
           <div class="field span2"><label for="notes">Observações</label><input id="notes" placeholder="Ex.: versão ao vivo, dedilhado no início..."></div>
         </div>
         <div class="notice">Dica: Ao passar o texto pela IA, peça para ela adicionar os tempos Ex: Bm(4). O sistema desenhará no canto de cada acorde.</div>
-        <div class="row" style="margin-top:12px"><button id="saveBtn">Salvar música</button><button class="secondary" id="previewBtn">Pré-visualizar</button></div>
+        <div class="row" style="margin-top:10px"><button id="saveBtn">Salvar música</button><button class="secondary" id="previewBtn">Pré-visualizar</button></div>
         <div class="status" id="editorStatus"></div>
         <pre id="preview" class="hidden" style="white-space:pre-wrap;color:var(--muted)"></pre>
       </section>
     </main>
   </div>
-  <div class="footer">CIFRA INTELIGENTE · V2.0.0 · Módulo Inline para Tablets e Medleys</div>
+  <div class="footer">CIFRA INTELIGENTE · V2.0.1 · Layout Super Compacto</div>
 </div>
 <script>
-/*
- * CONFIGURE API_URL com a URL /exec do Web App do Apps Script.
- */
-const API_URL = 'https://script.google.com/macros/s/AKfycbyKPbVtK5I8xkUo5RpHoZbDZOtEmLLiJyI2QG-g1_vl1FjM7uMtrJBbv9ARcYvqQDXc/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbzcvekR4cwaP3FsqkTA3RGguWlZ_Ks8fECJZfT7-XNgDv-kCW4Hallb9IuJiAwZOSgx/exec';
 
 let songs = [], currentSong = null;
 let isMedleyMode = false;
 let medleySongs = [];
-let currentViewMode = 'inline-degrees'; // Default da V2 (Letra + Graus Compacto)
+let currentViewMode = 'inline-degrees'; 
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -176,7 +173,6 @@ $('raw').addEventListener('input', function() {
             possibleArtist = nextLine;
         }
     }
-    
     if (!possibleTitle.match(/^(Tom:|\[|Capo|Afinação)/i) && !$('title').value) {$('title').value = possibleTitle;}
     if (possibleArtist && !$('artist').value) {$('artist').value = possibleArtist;}
   }
@@ -252,9 +248,9 @@ function renderCapoVariations(originalKey) {
   if (chipsHtml.length === 0) return '';
 
   return `
-    <div style="background:var(--panel2); border:1px solid var(--line); border-radius:12px; padding:12px; margin-top:10px;">
-      <div style="font-size:11px; color:var(--blue); font-weight:800; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.08em;">💡 Sugestões de Capotraste</div>
-      <div style="display:flex; gap:6px; flex-wrap:wrap;">
+    <div style="background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:10px; margin-top:8px;">
+      <div style="font-size:10px; color:var(--blue); font-weight:800; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.08em;">💡 Sugestões de Capotraste</div>
+      <div style="display:flex; gap:4px; flex-wrap:wrap;">
         ${chipsHtml.join('')}
       </div>
     </div>
@@ -317,7 +313,6 @@ function localParse(raw) {
   
   lines.forEach(line=>{
     const t = line.replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
-    
     const m = t.match(/^\[(.*?)\](.*)$/);
     if(m){
       flush();
@@ -363,12 +358,11 @@ function getSectionSnippet(sec) {
     let words = text.split(/\s+/);
     let snippet = words.slice(0, 4).join(' ');
     if (words.length > 4) snippet += '...';
-    return ` <span class="muted" style="font-size:12px; font-weight:normal; text-transform:none; margin-left:6px; letter-spacing: normal;">(${esc(snippet)})</span>`;
+    return ` <span class="muted" style="font-size:11px; font-weight:normal; text-transform:none; margin-left:6px; letter-spacing: normal;">(${esc(snippet)})</span>`;
   }
   return '';
 }
 
-// MOTOR DE PROGRESSÃO COMPACTADA (Para a aba "Graus (Blocos)")
 function compactProgression(sec, key) {
   let chordsData = []; 
   sec.lines.forEach((l, idx) => {
@@ -474,9 +468,9 @@ function compactProgression(sec, key) {
   return finalSeqs;
 }
 
-// NOVO: Motor Inline de Acordes para Tablets
+// NOVO: Motor Inline Corrigido (Sem parênteses fantasma e mesclado)
 function createCompactLine(chordsStr, lyricsStr, key, asDegrees) {
-    if (!chordsStr && !lyricsStr) return `<div style="height:6px"></div>`;
+    if (!chordsStr && !lyricsStr) return `<div style="height:4px"></div>`;
     if (!chordsStr) return `<div class="lyric-line">${esc(lyricsStr)}</div>`;
 
     let matches = [];
@@ -489,28 +483,29 @@ function createCompactLine(chordsStr, lyricsStr, key, asDegrees) {
     if (matches.length === 0) return `<div class="lyric-line">${esc(lyricsStr)}</div>`;
 
     matches.forEach(m => {
-        let cleanToken = m.chord.replace(/^[\(\[]|[\)\]]$/g, ''); 
+        // Limpa bordas (ex: remove "(" do início e ")" do final isolados)
+        let cleanToken = m.chord.replace(/^[\(\[\{]|[\)\]\}]$/g, ''); 
+        
         if (asDegrees) {
             let clean = cleanToken.replace(/\((0\.5|1|1\.5|2|2\.5|3|4|5|6|7|8|12|16)\)/, '');
             let parts = clean.split('/');
             let rootDeg = chordDegree(parts[0], key);
             let bassDeg = parts[1] ? '/' + chordDegree(parts[1], key).replace(/m$/, '') : '';
             let durMatch = cleanToken.match(/\((0\.5|1|1\.5|2|2\.5|3|4|5|6|7|8|12|16)\)/);
-            let finalDeg = rootDeg + bassDeg + (durMatch ? durMatch[0] : '');
             
-            if (m.chord.startsWith('(')) finalDeg = '(' + finalDeg;
-            if (m.chord.endsWith(')')) finalDeg = finalDeg + ')';
-            
-            m.display = finalDeg;
+            // Atribui o Grau final purinho, SEM forçar ")" fantasmas no fim.
+            m.display = rootDeg + bassDeg + (durMatch ? durMatch[0] : '');
         } else {
-            m.display = m.chord;
+            m.display = cleanToken;
         }
     });
 
+    // Se só tiver cifra, desenha apenas a linha compacta
     if (!lyricsStr) {
         return `<div class="lyric-line">` + matches.map(m => `<span class="c-deg">${esc(m.display)}</span>`).join(' ') + `</div>`;
     }
 
+    // Intersecção perfeita com a Letra (Truly Inline)
     let html = '';
     let lastIdx = 0;
     let paddedLyrics = lyricsStr.padEnd(chordsStr.length, ' ');
@@ -526,7 +521,7 @@ function createCompactLine(chordsStr, lyricsStr, key, asDegrees) {
         html += esc(paddedLyrics.substring(lastIdx));
     }
 
-    return `<div class="lyric-line">${html.replace(/\s+$/, '')}</div>`;
+    return `<div class="lyric-line">${html}</div>`;
 }
 
 function renderSections(sections, mode, songObj, isMedley = false) {
@@ -541,9 +536,9 @@ function renderSections(sections, mode, songObj, isMedley = false) {
   if (isMinorKey) {
      conversionKey = getRelativeMajor(tk);
      if (!isMedley) {
-        relativeWarning = `<div class="notice" style="margin-bottom: 12px; border-left: 4px solid var(--purple); background: #13111c;">💡 <strong>Tom Menor Detectado:</strong> A música está em <strong>${esc(tk)}</strong>. Graus convertidos para Relativo Maior (<strong>${esc(conversionKey)}</strong>).</div>`;
+        relativeWarning = `<div class="notice" style="margin-bottom: 8px; border-left: 4px solid var(--purple); background: #13111c;">💡 <strong>Tom Menor Detectado:</strong> A música está em <strong>${esc(tk)}</strong>. Graus convertidos para Relativo Maior (<strong>${esc(conversionKey)}</strong>).</div>`;
      } else {
-         relativeWarning = `<div style="font-size:11px; color:var(--purple); margin-bottom:8px;">Convertido para Relativo Maior: ${esc(conversionKey)}</div>`;
+         relativeWarning = `<div style="font-size:10px; color:var(--purple); margin-bottom:6px;">Convertido para Relativo Maior: ${esc(conversionKey)}</div>`;
      }
   }
 
@@ -567,14 +562,14 @@ function renderSections(sections, mode, songObj, isMedley = false) {
                   let color = chunk.isInterlude ? 'var(--purple)' : 'var(--muted)';
                   let fontStyle = chunk.isInterlude ? 'normal' : 'italic';
                   let quote = chunk.isInterlude ? '' : '"';
-                  snippetHtml = `<div style="font-size:11px; color:${color}; margin-bottom:3px; font-style:${fontStyle}; margin-top: 6px;">${quote}${esc(chunk.snippet)}${quote}</div>`;
+                  snippetHtml = `<div style="font-size:10px; color:${color}; margin-bottom:2px; font-style:${fontStyle}; margin-top: 4px;">${quote}${esc(chunk.snippet)}${quote}</div>`;
               }
               let degHtml = chunk.deg.map((d, i) => {
                   let m = d.match(/^(.*?)(\((0\.5|1|1\.5|2|2\.5|3|4|5|6|7|8|12|16)\))?$/);
                   let durText = m[3] || '';
-                  let pb = durText ? '12px' : '6px';
-                  let durHtml = durText ? `<span style="position:absolute; bottom:2px; right:4px; font-size:9px; color:var(--muted); font-weight:800; opacity:0.8;">${durText}</span>` : '';
-                  return `<div class="degree-card" style="flex:0 1 auto;padding:6px 4px ${pb} 4px;"><b style="font-size:14px;color:var(--blue);">${esc(m[1])}</b>${durHtml}</div>`;
+                  let pb = durText ? '12px' : '4px';
+                  let durHtml = durText ? `<span style="position:absolute; bottom:2px; right:4px; font-size:8px; color:var(--muted); font-weight:800; opacity:0.8;">${durText}</span>` : '';
+                  return `<div class="degree-card" style="flex:0 1 auto;padding:4px 4px ${pb} 4px;"><b style="font-size:13px;color:var(--blue);">${esc(m[1])}</b>${durHtml}</div>`;
               }).join('');
               let isLastChunk = chunkIdx === seq.subChunks.length - 1;
               let badge = (isLastChunk && seq.count > 1) ? `<div class="repeat-badge" title="Toda a sequência repete">${seq.count}x</div>` : '';
@@ -582,30 +577,47 @@ function renderSections(sections, mode, songObj, isMedley = false) {
           }).join('');
 
           let containerStyle = (seq.subChunks.length > 1 && seq.count > 1) 
-              ? 'background: rgba(0,0,0,0.2); border-left: 2px solid #3e5e99; padding-left: 8px; margin: 8px 0; border-radius: 4px; padding-bottom: 2px;' 
-              : 'margin-bottom: 10px;';
+              ? 'background: rgba(0,0,0,0.2); border-left: 2px solid #3e5e99; padding-left: 6px; margin: 6px 0; border-radius: 4px; padding-bottom: 2px;' 
+              : 'margin-bottom: 8px;';
 
           return `<div style="${containerStyle}">${chunkHtml}</div>`;
       }).join('');
 
-      let extraText = isExtensiveMedley ? '<span class="muted" style="font-size:10px; margin-left:6px; font-weight:normal;">(Medley Fracionado)</span>' : getSectionSnippet(sec);
-      return `<div class="section-summary"><h3 style="display:flex;align-items:center;flex-wrap:wrap;margin-bottom:8px;">${esc(sec.name)} ${extraText}</h3>${html || '<p class="muted">Nenhum acorde isolado.</p>'}</div>`;
+      let extraText = isExtensiveMedley ? '<span class="muted" style="font-size:9px; margin-left:4px; font-weight:normal;">(Medley Fracionado)</span>' : getSectionSnippet(sec);
+      return `<div class="section-summary"><h3 style="display:flex;align-items:center;flex-wrap:wrap;margin-bottom:6px;">${esc(sec.name)} ${extraText}</h3>${html || '<p class="muted">Nenhum acorde isolado.</p>'}</div>`;
 
     }).join('')}</div>`;
   }
   
-  // MODOS INLINE: LETRA + GRAUS ou LETRA + ACORDES (Super Compacto V2)
+  // MODOS INLINE: LETRA + GRAUS ou LETRA + ACORDES (Super Compacto V2.0.1)
   if (mode === 'inline-degrees' || mode === 'inline-chords') {
       const asDegrees = (mode === 'inline-degrees');
       return `${relativeWarning}<div class="section">${sections.map(sec => {
-          let linesHtml = sec.lines.map(l => {
+          
+          let mergedLines = [];
+          for (let i = 0; i < sec.lines.length; i++) {
+              let current = sec.lines[i];
+              let next = sec.lines[i+1];
+              
+              // Cérebro da mesclagem (Intersecção Verdadeira): 
+              // Se a linha atual só tem cifra e a debaixo só tem letra, elas viram UMA SÓ!
+              if (current.chords && !current.lyric && next && !next.chords && next.lyric) {
+                  mergedLines.push({ chords: current.chords, lyric: next.lyric });
+                  i++; // Pula a linha da letra pois já fundimos
+              } else {
+                  mergedLines.push(current);
+              }
+          }
+
+          let linesHtml = mergedLines.map(l => {
               return createCompactLine(l.chords, l.lyric, conversionKey, asDegrees);
           }).join('');
           
-          let secTitle = `<h3 style="margin: 0 0 4px; color: var(--purple); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; display:flex; align-items:center;">
+          let secTitle = `<h3 style="margin: 0 0 2px; color: var(--purple); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; display:flex; align-items:center;">
              ${esc(sec.name)}
           </h3>`;
-          return `<div style="margin-bottom: 12px; background: rgba(0,0,0,0.1); border-left: 2px solid #292d39; padding-left: 10px; border-radius: 4px;">${secTitle}${linesHtml}</div>`;
+          
+          return `<div style="margin-bottom: 8px; background: rgba(0,0,0,0.1); border-left: 2px solid #292d39; padding-left: 8px; border-radius: 4px;">${secTitle}${linesHtml}</div>`;
       }).join('')}</div>`;
   }
 }
@@ -623,11 +635,11 @@ function renderSong(song) {
     <div class="hero" style="flex-direction: column; width: 100%;">
       <div id="medleyHeader" class="hidden"></div>
       
-      <div id="viewModeHero" style="display: flex; justify-content: space-between; width: 100%; align-items: flex-start; gap: 12px; flex-wrap: wrap;">
+      <div id="viewModeHero" style="display: flex; justify-content: space-between; width: 100%; align-items: flex-start; gap: 10px; flex-wrap: wrap;">
         <div style="flex: 1 1 min-content; min-width: 150px;">
           <div class="eyebrow">Modo palco · cifra salva</div>
           <h2>${esc(song.titulo)}</h2>
-          <div class="muted">${esc(song.artista||'Artista não informado')}</div>
+          <div class="muted" style="font-size:12px;">${esc(song.artista||'Artista não informado')}</div>
           <div class="chips">
             <span class="chip">${tomText}</span>
             ${capoText ? `<span class="chip">${capoText}</span>` : ''}
@@ -636,14 +648,14 @@ function renderSong(song) {
         </div>
 
         <div class="toolbar" id="viewToolbar" style="flex: 0 0 auto;">
-          <button class="secondary" id="editBtn" style="padding: 10px; display: grid; place-items: center; border-radius: 10px;" title="Editar">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+          <button class="secondary" id="editBtn" style="padding: 8px; display: grid; place-items: center; border-radius: 8px;" title="Editar">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
           </button>
-          <button class="secondary" id="medleyBtn">Medleys</button>
+          <button class="secondary" id="medleyBtn" style="font-size:12px;">Medleys</button>
         </div>
       </div>
 
-      <div id="editModeHero" class="hidden" style="width: 100%; display:flex; flex-direction:column; gap:10px;">
+      <div id="editModeHero" class="hidden" style="width: 100%; display:flex; flex-direction:column; gap:8px;">
            <div class="field"><label>Título</label><input id="editTitle" value="${esc(song.titulo)}" placeholder="Ex: Toda Terra"></div>
            <div class="field"><label>Artista</label><input id="editArtist" value="${esc(song.artista)}" placeholder="Ex: Gabriela Rocha"></div>
            <div class="row">
@@ -652,9 +664,9 @@ function renderSong(song) {
            </div>
            <div class="field">
              <label>Conteúdo da Cifra</label>
-             <textarea id="editRaw" style="min-height: 250px; font-family: monospace; white-space: pre-wrap;">${esc(song.cifraOriginal)}</textarea>
+             <textarea id="editRaw" style="min-height: 200px; font-family: monospace; white-space: pre-wrap;">${esc(song.cifraOriginal)}</textarea>
            </div>
-           <div class="toolbar" id="editToolbar" style="margin-top: 6px; width: 100%; justify-content: flex-end; padding-top: 10px; border-top: 1px solid var(--line);">
+           <div class="toolbar" id="editToolbar" style="margin-top: 4px; width: 100%; justify-content: flex-end; padding-top: 8px; border-top: 1px solid var(--line);">
              <button class="danger" id="deleteBtn" style="margin-right: auto;">Excluir</button>
              <button class="secondary" id="cancelEditBtn">Cancelar</button>
              <button id="saveEditBtn">Salvar Alterações</button>
@@ -664,8 +676,8 @@ function renderSong(song) {
     
     <div id="infoWrapper">${capoVariationsHtml}</div>
 
-    <!-- Novas Abas Inteligentes (Acessíveis mesmo no modo Medley) -->
-    <div class="tabs" style="margin-top:16px" id="globalTabs">
+    <!-- Novas Abas Inteligentes -->
+    <div class="tabs" style="margin-top:10px" id="globalTabs">
       <button class="tab" data-view="inline-degrees">Letra + Graus (Compacto)</button>
       <button class="tab" data-view="inline-chords">Letra + Acordes</button>
       <button class="tab" data-view="degrees">Graus (Blocos)</button>
@@ -674,7 +686,6 @@ function renderSong(song) {
     <div id="songContent"></div>
   `;
   
-  // Inicializa estado e tabs
   updateTabsState();
   if (isMedleyMode) {
       renderMedleyView();
@@ -765,7 +776,6 @@ function renderList() {
   });
 }
 
-// LÓGICA DE MEDLEY MULTIPLO OTIMIZADA PARA TABLETS
 async function loadMedleys() {
   $('medleyResults').innerHTML = '<div class="muted">Analisando sua biblioteca…</div>';
   openModal('medleyModal');
@@ -787,7 +797,7 @@ async function loadMedleys() {
             ${m.isMatch ? '✓ ' : '⚠ '} ${esc(m.motivo)}
           </div>
         </div>
-        <button class="secondary small" onclick="addToMedley(event, '${m.id}')" style="white-space:nowrap; padding:6px 10px;">Adicionar</button>
+        <button class="secondary small" onclick="addToMedley(event, '${m.id}')" style="white-space:nowrap; padding:4px 8px;">Adicionar</button>
       </div>
     `).join('') : '<div class="muted small" style="padding:10px 0;">Não há mais músicas para adicionar.</div>';
   } catch(e) { $('medleyResults').textContent=e.message; }
@@ -796,7 +806,7 @@ async function loadMedleys() {
 async function addToMedley(event, targetId) {
   const btn = event.currentTarget;
   const origText = btn.textContent;
-  btn.textContent = 'Carregando...'; btn.disabled = true;
+  btn.textContent = '...'; btn.disabled = true;
   
   try {
     const targetSong = await api('getSong', {id: targetId});
@@ -806,7 +816,7 @@ async function addToMedley(event, targetId) {
     }
     medleySongs.push(targetSong);
     closeModal('medleyModal'); 
-    renderSong(currentSong); // Re-render root
+    renderSong(currentSong); 
   } catch(e) {
     alert(e.message); btn.textContent = origText; btn.disabled = false;
   }
@@ -819,27 +829,27 @@ function renderMedleyView() {
     let medleyHeader = $('medleyHeader');
     medleyHeader.classList.remove('hidden');
     medleyHeader.innerHTML = `
-      <div style="display:flex; justify-content:space-between; width:100%; align-items:flex-start; gap: 12px; margin-bottom: 12px;">
+      <div style="display:flex; justify-content:space-between; width:100%; align-items:flex-start; gap: 10px; margin-bottom: 8px;">
           <div style="flex-grow:1;">
-            <div class="eyebrow" style="color:var(--green); margin-bottom: 4px;">Modo Medley (Lado a Lado)</div>
-            <h2 style="font-size:20px; line-height:1.2; margin:0;">
-              ${medleySongs.map(s => esc(s.titulo)).join(' <span class="muted" style="font-weight:400; font-size:16px;">+</span> ')}
+            <div class="eyebrow" style="color:var(--green); margin-bottom: 2px;">Modo Medley (Lado a Lado)</div>
+            <h2 style="font-size:18px; line-height:1.2; margin:0;">
+              ${medleySongs.map(s => esc(s.titulo)).join(' <span class="muted" style="font-weight:400; font-size:14px;">+</span> ')}
             </h2>
           </div>
-          <button class="menu-toggle" onclick="exitMedley()" title="Sair do Medley" style="width:36px; height:36px; flex-shrink:0; margin:0; background: var(--panel2);">✕</button>
+          <button class="menu-toggle" onclick="exitMedley()" title="Sair do Medley" style="width:32px; height:32px; flex-shrink:0; margin:0; background: var(--panel2);">✕</button>
       </div>
     `;
 
     let columnsHtml = medleySongs.map((song, idx) => {
         const sec = localParse(song.cifraOriginal || '');
         return `
-        <div style="min-width:280px; flex: 1 1 0; background: var(--panel2); border: 1px solid var(--line); border-radius: 12px; padding: 12px; display:flex; flex-direction:column;">
-          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; border-bottom:1px solid var(--line); padding-bottom:8px;">
+        <div style="min-width:280px; flex: 1 1 0; background: var(--panel2); border: 1px solid var(--line); border-radius: 10px; padding: 10px; display:flex; flex-direction:column;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px; border-bottom:1px solid var(--line); padding-bottom:6px;">
               <div>
-                <h3 style="margin:0; color:var(--${idx % 2 === 0 ? 'blue' : 'purple'}); font-size:14px; margin-bottom:2px;">${idx + 1}. ${esc(song.titulo)}</h3>
-                <div style="font-size:11px; color:var(--muted);">${esc(song.tomOriginal||'')} ${song.capotrasteSugerido ? `· Capo ${song.capotrasteSugerido}` : ''}</div>
+                <h3 style="margin:0; color:var(--${idx % 2 === 0 ? 'blue' : 'purple'}); font-size:13px; margin-bottom:2px;">${idx + 1}. ${esc(song.titulo)}</h3>
+                <div style="font-size:10px; color:var(--muted);">${esc(song.tomOriginal||'')} ${song.capotrasteSugerido ? `· Capo ${song.capotrasteSugerido}` : ''}</div>
               </div>
-              ${idx > 0 ? `<button onclick="removeFromMedley(${idx})" style="background:transparent; border:none; color:var(--muted); padding:4px; font-size:16px; cursor:pointer;" title="Remover Música">✕</button>` : ''}
+              ${idx > 0 ? `<button onclick="removeFromMedley(${idx})" style="background:transparent; border:none; color:var(--muted); padding:2px; font-size:14px; cursor:pointer;" title="Remover Música">✕</button>` : ''}
           </div>
           <div style="flex-grow:1; font-size: 13px;">
               ${renderSections(sec, currentViewMode, song, true)}
@@ -848,13 +858,12 @@ function renderMedleyView() {
         `;
     }).join('');
 
-    // Grid Horizontal Otimizado
     $('songContent').innerHTML = `
-      <div style="display:flex; gap: 10px; overflow-x: auto; padding-bottom: 12px; align-items: stretch; margin-top: 10px;">
+      <div style="display:flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; align-items: stretch; margin-top: 8px;">
         ${columnsHtml}
-        <button onclick="loadMedleys()" class="secondary" style="min-width:140px; display:flex; flex-direction:column; align-items:center; justify-content:center; border:1px dashed var(--line); gap:8px; border-radius:12px; background: transparent;">
-            <span style="font-size:28px; font-weight: 300; color:var(--muted);">+</span>
-            <span style="color:var(--muted); font-size: 12px;">Adicionar</span>
+        <button onclick="loadMedleys()" class="secondary" style="min-width:120px; display:flex; flex-direction:column; align-items:center; justify-content:center; border:1px dashed var(--line); gap:6px; border-radius:10px; background: transparent;">
+            <span style="font-size:24px; font-weight: 300; color:var(--muted);">+</span>
+            <span style="color:var(--muted); font-size: 11px;">Adicionar</span>
         </button>
       </div>
     `;
@@ -886,7 +895,7 @@ $('saveBtn').onclick=async()=>{
   const status=$('editorStatus');
   const song={titulo:$('title').value,artista:$('artist').value,tomOriginal:$('key').value,bpm:'',compasso:'',capotrasteSugerido:$('capo').value,cifraOriginal:$('raw').value,observacoes:$('notes').value};
   try {
-    notify(status,'Salvando música... (Isso pode levar alguns segundos)');
+    notify(status,'Salvando música...');
     const result=await api('importSong',{song});
     notify(status,`Salvo: ${result.titulo}. Carregando...`);
     await loadSongs(); renderSong(await api('getSong',{id:result.id})); closeEditor();
