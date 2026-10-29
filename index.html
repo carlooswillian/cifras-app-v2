@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#08090d">
-<title>Cifra Inteligente v2.0.2</title>
+<title>Cifra Inteligente v2.0.3</title>
 <style>
 :root{color-scheme:dark;--bg:#08090d;--panel:#12141b;--panel2:#191c25;--line:#292d39;--text:#f5f6fb;--muted:#9ba2b3;--blue:#78a7ff;--purple:#b6a0ff;--green:#80dfb0;--danger:#ff8e9a;--radius:12px}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#171b2a 0,var(--bg) 50%);color:var(--text);font:14px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;min-height:100vh}
@@ -17,26 +17,31 @@ input,textarea,select{width:100%;background:#0c0e14;color:var(--text);border:1px
 .modal-body::-webkit-scrollbar {width:6px}
 .modal-body::-webkit-scrollbar-thumb {background:var(--line);border-radius:6px}
 
-/* SUPER COMPACTO INLINE (TABLET OPTIMIZED) */
-.c-deg {
+/* NOVO MOTOR MONOSPACE DE DUPLA-LINHA (Não quebra as palavras) */
+.line-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 8px; /* Espaço entre os versos */
+}
+.chord-line {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 14px; /* OBRIGATÓRIO SER IGUAL AO LYRIC-LINE */
+    line-height: 1.1;
+    white-space: pre; /* Mantém os espaços intocáveis para garantir alinhamento */
     color: var(--blue);
-    font-weight: 800;
-    font-size: 11px;
-    background: #1a1e2a;
-    border: 1px solid #2d354a;
-    padding: 1px 4px;
-    border-radius: 4px;
-    margin: 0 2px;
-    display: inline-block;
-    transform: translateY(-1px);
-    line-height: 1;
+    margin-bottom: 1px;
 }
 .lyric-line {
-    font-size: 14px;
-    line-height: 1.5;
-    margin-bottom: 2px;
-    white-space: pre-wrap; /* Permite rolar e respeita os espaços exatamente */
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 14px; /* OBRIGATÓRIO SER IGUAL AO CHORD-LINE */
+    line-height: 1.3;
+    white-space: pre-wrap; /* Permite quebrar linha na tela se o tablet for pequeno */
+}
+.c-deg {
+    font-weight: 800;
+    color: var(--blue);
+    background: rgba(120, 167, 255, 0.15); /* Fundo sutil sem distorcer o width */
+    border-radius: 3px;
 }
 
 @media(max-width:800px){.top-actions button{padding:6px 8px}.app{padding:10px 8px 60px}.hero h2{font-size:18px}.panel{padding:10px}.form-grid{grid-template-columns:1fr}.span2{grid-column:auto}}
@@ -106,7 +111,7 @@ input,textarea,select{width:100%;background:#0c0e14;color:var(--text);border:1px
       </section>
     </main>
   </div>
-  <div class="footer">CIFRA INTELIGENTE · V2.0.2 · Ultimate Compact Horizontal Edition</div>
+  <div class="footer">CIFRA INTELIGENTE · V2.0.3 · Motor Monospace Alinhado (Anti-Quebra)</div>
 </div>
 <script>
 const API_URL = 'https://script.google.com/macros/s/AKfycbzcvekR4cwaP3FsqkTA3RGguWlZ_Ks8fECJZfT7-XNgDv-kCW4Hallb9IuJiAwZOSgx/exec';
@@ -471,77 +476,87 @@ function compactProgression(sec, key) {
   return finalSeqs;
 }
 
-// NOVO MOTOR INLINE: Blindado contra Bugs e 100% Horizontal
+// MOTOR MONOSPACE: Resolve o bug de "Qu1(4)em" preservando alinhamento e espaços!
 function createCompactLine(chordsStr, lyricsStr, key, asDegrees) {
     if (!chordsStr && !lyricsStr) return `<div style="height:4px"></div>`;
-    if (!chordsStr) return `<div class="lyric-line">${esc(lyricsStr)}</div>`;
+    
+    let formattedChords = '';
+    
+    if (chordsStr) {
+        let resultHtml = '';
+        let lastIdx = 0;
+        let regex = /\S+/g; 
+        let match;
+        
+        while ((match = regex.exec(chordsStr)) !== null) {
+            let token = match[0];
+            let display = token;
 
-    let matches = [];
-    let regex = /\S+/g; 
-    let match;
-    while ((match = regex.exec(chordsStr)) !== null) {
-        matches.push({ chord: match[0], index: match.index });
-    }
+            if (asDegrees) {
+                let durText = '';
+                let durMatch = token.match(/\((0\.5|1|1\.5|2|2\.5|3|4|5|6|7|8|12|16)\)/);
+                if (durMatch) {
+                    durText = durMatch[0];
+                    token = token.replace(durMatch[0], ''); 
+                }
+                
+                // Remove parênteses (G) -> G antes da conversão
+                token = token.replace(/^[\(\[\{]+|[\)\]\}]+$/g, '');
 
-    if (matches.length === 0) return `<div class="lyric-line">${esc(lyricsStr)}</div>`;
-
-    matches.forEach(m => {
-        let token = m.chord;
-        let display = token;
-
-        if (asDegrees) {
-            let durText = '';
-            let durMatch = token.match(/\((0\.5|1|1\.5|2|2\.5|3|4|5|6|7|8|12|16)\)/);
-            if (durMatch) {
-                durText = durMatch[0];
-                token = token.replace(durMatch[0], ''); 
+                if (token) {
+                    let parts = token.split('/');
+                    let rootDeg = chordDegree(parts[0], key);
+                    let bassDeg = parts[1] ? '/' + chordDegree(parts[1], key).replace(/m$/, '') : '';
+                    display = rootDeg + bassDeg + durText;
+                } else {
+                    display = durText;
+                }
+            } else {
+                display = token.replace(/^[\(\[\{]+|[\)\]\}]+$/g, '');
             }
             
-            // Remove parênteses e colchetes residuais de proteção (EX: (G) -> G) ANTES de checar o grau
-            token = token.replace(/^[\(\[\{]+|[\)\]\}]+$/g, '');
-
-            if (token) {
-                let parts = token.split('/');
-                let rootDeg = chordDegree(parts[0], key);
-                let bassDeg = parts[1] ? '/' + chordDegree(parts[1], key).replace(/m$/, '') : '';
-                display = rootDeg + bassDeg + durText; // Parênteses extintos e banidos
-            } else {
-                display = durText;
+            // 1. Adiciona os espaços em branco que vieram ANTES do acorde
+            resultHtml += chordsStr.substring(lastIdx, match.index);
+            
+            // 2. Adiciona o Acorde formatado
+            resultHtml += `<span class="c-deg">${esc(display)}</span>`;
+            
+            // 3. Compensação Matemática Espacial (O Pulo do Gato)
+            // Se o acorde original 'G' (tamanho 1) virou '1(4)' (tamanho 4), precisamos ENGOOLIR 3 espaços
+            // logo em seguida para que o PRÓXIMO acorde não seja empurrado pra direita.
+            let diff = display.length - match[0].length;
+            lastIdx = match.index + match[0].length;
+            
+            if (diff > 0) {
+                // Come os espaços seguintes se eles existirem
+                let nextText = chordsStr.substring(lastIdx);
+                let spaceCount = 0;
+                while(spaceCount < diff && nextText[spaceCount] === ' ') {
+                    spaceCount++;
+                }
+                lastIdx += spaceCount;
+            } else if (diff < 0) {
+                // Se diminuiu ('C#m' virou '2m'), injetamos espaço extra para compensar o buraco
+                resultHtml += ' '.repeat(-diff);
             }
-        } else {
-            display = token.replace(/^[\(\[\{]+|[\)\]\}]+$/g, '');
         }
         
-        m.display = display;
-    });
-
-    if (!lyricsStr) {
-        return `<div class="lyric-line">` + matches.map(m => `<span class="c-deg">${esc(m.display)}</span>`).join(' ') + `</div>`;
+        // Adiciona qualquer espaço final que tenha sobrado
+        resultHtml += chordsStr.substring(lastIdx);
+        formattedChords = resultHtml;
     }
 
-    // Intersecção perfeita e espaçada na Letra
-    let html = '';
-    let lastIdx = 0;
+    // Retorna as duas linhas grudadas. A magia visual acontece no CSS (Monospace Size = 14px)
+    let html = `<div class="line-group">`;
+    if (formattedChords) {
+        html += `<div class="chord-line">${formattedChords}</div>`;
+    }
+    if (lyricsStr) {
+        html += `<div class="lyric-line">${esc(lyricsStr)}</div>`;
+    }
+    html += `</div>`;
     
-    // O texto precisa ter no mínimo o tamanho da cifra pra respeitar a margem direita
-    let paddedLyrics = lyricsStr;
-    if (chordsStr.length > lyricsStr.length) {
-        paddedLyrics = lyricsStr.padEnd(chordsStr.length, ' ');
-    }
-
-    matches.forEach(m => {
-        if (m.index > lastIdx) {
-            html += esc(paddedLyrics.substring(lastIdx, m.index));
-        }
-        html += `<span class="c-deg">${esc(m.display)}</span>`;
-        lastIdx = m.index;
-    });
-    
-    if (lastIdx < paddedLyrics.length) {
-        html += esc(paddedLyrics.substring(lastIdx));
-    }
-
-    return `<div class="lyric-line">${html}</div>`;
+    return html;
 }
 
 function renderSections(sections, mode, songObj, isMedley = false) {
@@ -565,7 +580,7 @@ function renderSections(sections, mode, songObj, isMedley = false) {
   const titleParts = songObj.titulo.split(/[/+]/).map(p => p.trim()).filter(p => p.length > 0);
   const isExtensiveMedley = titleParts.length >= 3;
   
-  // MODO: GRAUS (BLOCOS)
+  // MODO: GRAUS (BLOCOS DE PROGRESSÃO ANTIGOS)
   if (mode === 'degrees') {
     const seen = new Set();
     const uniqueSections = sections.filter(sec => {
@@ -609,21 +624,21 @@ function renderSections(sections, mode, songObj, isMedley = false) {
     }).join('')}</div>`;
   }
   
-  // MODOS INLINE (MÁXIMA COMPACTAÇÃO DE TABLET)
+  // MODOS INLINE: LETRA + GRAUS ou LETRA + ACORDES
   if (mode === 'inline-degrees' || mode === 'inline-chords') {
       const asDegrees = (mode === 'inline-degrees');
       return `${relativeWarning}<div class="section">${sections.map(sec => {
           
           let mergedLines = [];
           
-          // O Milagre da Mesclagem: Se a linha é só cifra e a debaixo é só letra, unem-se em uma só!
+          // Pareia a cifra com a letra que vem logo abaixo
           for (let i = 0; i < sec.lines.length; i++) {
               let current = sec.lines[i];
               let next = sec.lines[i+1];
               
               if (current.chords && !current.lyric && next && !next.chords && next.lyric) {
                   mergedLines.push({ chords: current.chords, lyric: next.lyric });
-                  i++; // Pula a linha de letra (ela já foi grudada)
+                  i++; // Pula a linha da letra pois já pareamos
               } else {
                   mergedLines.push(current);
               }
