@@ -89,17 +89,19 @@ export function getSong(id) {
 
 export async function saveSong(song) {
   const now = Date.now();
-  // sem título/artista informados, usa o que estiver escrito no topo da cifra
-  const meta = (!String(song.title || '').trim() || !String(song.artist || '').trim()) ? parseCifra(song.source || '').meta : {};
+  // campos não informados (título, artista, capo, compasso, bpm) vêm do que estiver escrito na cifra
+  const blank = (v) => v === undefined || v === null || String(v).trim() === '';
+  const needMeta = blank(song.title) || blank(song.artist) || blank(song.capo) || blank(song.timeSig) || blank(song.bpm);
+  const meta = needMeta ? parseCifra(song.source || '').meta : {};
   const rec = {
     id: song.id || uid(),
     title: (song.title || '').trim() || meta.title || 'Sem título',
     artist: (song.artist || '').trim() || meta.artist || '',
     source: prepareSource(song.source || ''),
     key: (song.key || '').trim(),
-    capo: Number(song.capo) || 0,
-    timeSig: song.timeSig || '4/4',
-    bpm: Number(song.bpm) || 0,
+    capo: blank(song.capo) ? (meta.capo || 0) : Number(song.capo) || 0,
+    timeSig: blank(song.timeSig) ? (meta.timeSig || '4/4') : song.timeSig,
+    bpm: blank(song.bpm) ? (meta.bpm || 0) : Number(song.bpm) || 0,
     strum: (song.strum || '').trim(),
     notes: (song.notes || '').trim(),
     createdAt: song.createdAt || now,
