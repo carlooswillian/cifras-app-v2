@@ -4,7 +4,8 @@
 import { buildChart } from './music/chart.js';
 import { viewFrame } from './music/transition.js';
 import { degreeLabel } from './music/keys.js';
-import { prepareSource } from './music/parser.js';
+import { prepareSource, parseCifra } from './music/parser.js';
+import { uid } from './ui/dom.js';
 
 const DB_NAME = 'cifras';
 const DB_VERSION = 1;
@@ -88,10 +89,12 @@ export function getSong(id) {
 
 export async function saveSong(song) {
   const now = Date.now();
+  // sem título/artista informados, usa o que estiver escrito no topo da cifra
+  const meta = (!String(song.title || '').trim() || !String(song.artist || '').trim()) ? parseCifra(song.source || '').meta : {};
   const rec = {
-    id: song.id,
-    title: (song.title || '').trim() || 'Sem título',
-    artist: (song.artist || '').trim(),
+    id: song.id || uid(),
+    title: (song.title || '').trim() || meta.title || 'Sem título',
+    artist: (song.artist || '').trim() || meta.artist || '',
     source: prepareSource(song.source || ''),
     key: (song.key || '').trim(),
     capo: Number(song.capo) || 0,
