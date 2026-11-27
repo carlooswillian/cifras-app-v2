@@ -2,17 +2,17 @@
 
 import * as store from './store.js';
 import { settings, setSetting, onSettings, applyTheme, songView, setSongView, DEFAULTS } from './settings.js';
-import { buildChart } from './music/chart.js';
+import { buildChart, partsEdges } from './music/chart.js';
 import { parseCifra, setBeatsInSource, fmtBeats } from './music/parser.js';
 import { viewFrame, transitionHint, matchKeyTranspose } from './music/transition.js';
 import { transposeKey, parseKey } from './music/notes.js';
-import { renderChart, renderLyrics, eventIndex, chartMinColEm } from './ui/render.js';
+import { renderChart, renderLyrics, eventIndex, chartMinColEm, validParts } from './ui/render.js';
 import { fitToBox } from './ui/fit.js';
 import { Player, tapTempo } from './ui/player.js';
 import { $, $$, esc, toast, modal, confirmBox, popover, uid, debounce, download } from './ui/dom.js';
 import { fetchOldSongs, convertOldSong, OLD_API_URL } from './legacy.js';
 
-export const VERSION = '3.0.0';
+export const VERSION = '3.1.0';
 const main = $('#main');
 let cleanups = [];
 const onLeave = (fn) => cleanups.push(fn);
@@ -281,7 +281,7 @@ function songScreen(id) {
 
   const fitNow = () => {
     const el = $('#body > .chart, #body > .lyrics');
-    if (el) fitToBox(el, view.mode === 'chart' ? { min: 11, max: 46, colSel: '.blocks', minColPx: 230, minColEm: chartMinColEm(chart) } : { min: 13, max: 34, minColPx: 300, minColEm: 17, gapEm: 2, padEm: 1.8 });
+    if (el) fitToBox(el, view.mode === 'chart' ? { min: 11, max: 46, colSel: '.blocks', minColPx: 230, minColEm: chartMinColEm(chart, settings().density === 'compact') } : { min: 13, max: 34, minColPx: 300, minColEm: 17, gapEm: 2, padEm: 1.8 });
   };
 
   const rebuild = () => { st = settings(); chart = chartFor(song, st); if (player) { player.stop(false); player = null; } draw(); };
@@ -386,6 +386,7 @@ function displayOptions(anchor, onChange) {
       ${seg('degreeStyle', [['numbers', '1 4 5 6m'], ['roman', 'I IV V VIm']])}
       ${seg('lyricChords', [['both', 'Letra: ambos'], ['names', 'nomes'], ['degrees', 'graus']])}
       ${seg('chordStyle', [['simple', 'Acorde básico'], ['original', 'Como escrito']])}
+      ${seg('density', [['normal', 'Mapa detalhado'], ['compact', 'Mapa compacto']])}
     </div>
     ${sw('showBass', 'Mostrar baixo (D/F#)')}${sw('showCues', 'Início da letra no mapa')}${sw('showField', 'Campo harmônico')}${sw('colorDegrees', 'Cores por grau')}${sw('showTabs', 'Tablaturas na letra')}
     <div class="opt"><span>Tom menor</span>${seg('minorMode', [['relative', 'Em = 6m'], ['tonic', 'Em = 1m']])}</div>`,
@@ -545,6 +546,7 @@ function medleyScreen(id) {
   let st = settings();
   let mode = 'chart';
   const chartById = new Map(); // índice do item no medley -> mapa (para o ajuste de colunas)
+  const partsEdit = new Set(); // colunas em modo "escolher partes"
 
   const items = () => medley.items.map((it, i) => ({ it, i, song: store.getSong(it.songId) })).filter((x) => x.song);
 
@@ -561,12 +563,16 @@ function medleyScreen(id) {
     chartById.clear();
     list.forEach(({ i }, k) => chartById.set(String(i), charts[k]));
     const frames = list.map(({ it, song }, k) => viewFrame(charts[k], { transpose: it.transpose || 0, capo: it.capo }));
+    // a virada usa só as partes escolhidas (fim da última parte de A -> começo da primeira parte de B)
+    const edgeCharts = list.map(({ it }, k) => ({ ...charts[k], ...partsEdges(charts[k], it.parts) }));
     const cols = list.map(({ it, i, song }, k) => {
       const chart = charts[k], frame = frames[k];
       const next = k + 1 < list.length ? k + 1 : -1;
+      const editing = partsEdit.has(i);
+      const nParts = it.parts ? validParts(chart, it.parts) : null;
       let vir = '';
       if (next >= 0) {
-        const h = transitionHint(chart, frame, charts[next], frames[next], st);
+        const h = transitionHint(edgeCharts[k], frame, edgeCharts[next], frames[next], st);
         if (h) vir = `<div class="virada"><div class="vt">➜ ${esc(list[next].song.title)}: ${esc(h.title)}</div><div class="chain">${h.chain.map((c, ci) => `${ci ? '<span>→</span>' : ''}<b>${esc(c)}</b>`).join('')}<span class="vd">${esc(h.detail)}</span></div>${h.capoNote ? `<div class="vd">${esc(h.capoNote)}</div>` : ''}</div>`;
       }
       return `<div class="mcol" data-i="${i}">
@@ -575,16 +581,20 @@ function medleyScreen(id) {
           <div class="ctl">
             <div class="stepper"><button data-mt="${i}" data-d="-1">−</button><span class="val">${esc(frame.soundingKey.name)}<small>tom</small></span><button data-mt="${i}" data-d="1">＋</button></div>
             <div class="stepper"><button data-mc="${i}" data-d="-1">−</button><span class="val">${frame.capo ? frame.capo + 'ª' : 'sem'}<small>capo${frame.capo ? ' · ' + esc(frame.shapesKey.name) : ''}</small></span><button data-mc="${i}" data-d="1">＋</button></div>
+            <button class="btn sm ${editing ? 'on' : ''}" data-parts="${i}" title="Escolher quais partes desta música entram no medley">✂ Partes</button>
+            ${nParts && !editing ? `<span class="pcount">${nParts.length} de ${chart.form.length} partes</span>` : ''}
             ${song.bpm ? `<span class="chip">${song.bpm} bpm</span>` : ''}
           </div>
+          ${editing ? `<div class="partsbar">Toque nas partes que entram no medley <button class="btn sm" data-pall="${i}">Todas</button><button class="btn sm primary" data-pdone="${i}">Pronto</button></div>` : ''}
         </div>
-        <div class="mcol-body">${mode === 'chart' ? renderChart(chart, frame, st, { compact: true }) : renderLyrics(chart, frame, st)}</div>
+        <div class="mcol-body">${mode === 'chart' ? renderChart(chart, frame, st, { compact: true, parts: it.parts, partsEdit: editing }) : renderLyrics(chart, frame, st, { parts: it.parts })}</div>
         ${vir}
       </div>`;
     }).join('');
     const n = Math.max(1, list.length);
     main.innerHTML = `<div class="stage-wrap">
       <div class="stagebar"><div class="segctl"><button data-mode="chart" class="${mode === 'chart' ? 'on' : ''}">Mapa</button><button data-mode="lyrics" class="${mode === 'lyrics' ? 'on' : ''}">Letra</button></div>
+      ${mode === 'chart' ? `<div class="segctl" title="Compacto: as linhas de cada parte ficam lado a lado, sem o início da letra"><button data-dens="compact" class="${st.medleyDensity === 'compact' ? 'on' : ''}">Compacto</button><button data-dens="normal" class="${st.medleyDensity !== 'compact' ? 'on' : ''}">Detalhado</button></div>` : ''}
       <span class="grow"></span><button class="btn sm" id="mAdd">＋ Música</button></div>
       <div class="stage-body"><div class="medley" style="--mcol-w:${Math.max(280, Math.floor((main.clientWidth || window.innerWidth) / Math.min(n, 4)) - 1)}px">${cols || '<div class="empty" style="margin:auto">Medley vazio. Toque em "+ Música".</div>'}</div></div>
     </div>`;
@@ -592,12 +602,42 @@ function medleyScreen(id) {
     fitAll();
   };
 
-  const fitAll = () => { $$('.mcol-body > .chart, .mcol-body > .lyrics').forEach((el) => fitToBox(el, mode === 'chart' ? { min: 10, max: 30, colSel: '.blocks', maxCols: 2, minColPx: 170, minColEm: chartMinColEm(chartById.get(el.closest('.mcol').dataset.i) || { blocks: [], beatsPerBar: 4 }) } : { min: 11, max: 24, maxCols: 1 })); };
+  const fitAll = () => {
+    const dense = settings().medleyDensity === 'compact';
+    $$('.mcol-body > .chart, .mcol-body > .lyrics').forEach((el) => {
+      const chart = chartById.get(el.closest('.mcol').dataset.i) || { blocks: [], beatsPerBar: 4 };
+      fitToBox(el, mode === 'chart'
+        ? { min: 12, max: 34, colSel: '.blocks', maxCols: 2, minColPx: 170, minColEm: chartMinColEm(chart, dense) }
+        : { min: 12, max: 26, maxCols: 1 });
+    });
+  };
 
   const save = async () => { Object.assign(medley, await store.saveMedley(medley)); };
 
   const bind = () => {
     $$('[data-mode]').forEach((b) => { b.onclick = () => { mode = b.dataset.mode; draw(); }; });
+    $$('[data-dens]').forEach((b) => { b.onclick = () => setSetting('medleyDensity', b.dataset.dens); });
+    // escolher partes
+    $$('[data-parts]').forEach((b) => { b.onclick = () => { const i = Number(b.dataset.parts); if (partsEdit.has(i)) partsEdit.delete(i); else partsEdit.add(i); draw(); }; });
+    $$('[data-pdone]').forEach((b) => { b.onclick = () => { partsEdit.delete(Number(b.dataset.pdone)); draw(); }; });
+    $$('[data-pall]').forEach((b) => { b.onclick = async () => { medley.items[Number(b.dataset.pall)].parts = null; await save(); draw(); }; });
+    $$('.mcol .parts-edit .fc[data-fi]').forEach((chip) => {
+      chip.onclick = async () => {
+        const i = Number(chip.closest('.mcol').dataset.i);
+        const it = medley.items[i];
+        const chart = chartById.get(String(i));
+        if (!chart) return;
+        const n = chart.form.length;
+        const cur = new Set(validParts(chart, it.parts) || [...Array(n).keys()]);
+        const fi = Number(chip.dataset.fi);
+        if (cur.has(fi)) {
+          if (cur.size === 1) { toast('Deixe pelo menos uma parte'); return; }
+          cur.delete(fi);
+        } else cur.add(fi);
+        it.parts = cur.size === n ? null : [...cur].sort((a, b) => a - b);
+        await save(); draw();
+      };
+    });
     $$('[data-mt]').forEach((b) => { b.onclick = async () => { const it = medley.items[Number(b.dataset.mt)]; it.transpose = (((it.transpose || 0) + Number(b.dataset.d) + 18) % 12) - 6; await save(); draw(); }; });
     $$('[data-mc]').forEach((b) => {
       b.onclick = async () => {
@@ -678,6 +718,8 @@ function settingsView() {
       <div class="opt"><span class="ol">Acordes<small>"Básico" mostra só maior/menor/diminuto</small></span>${seg('chordStyle', [['simple', 'Básico'], ['original', 'Como escrito']])}</div>
       <div class="opt"><span class="ol">Tom menor<small>Relativo: Em vira 6m (mesmos números do tom maior)</small></span>${seg('minorMode', [['relative', 'Em = 6m'], ['tonic', 'Em = 1m']])}</div>
       <div class="opt"><span class="ol">Na letra</span>${seg('lyricChords', [['both', 'Acorde + grau'], ['names', 'Só acorde'], ['degrees', 'Só grau']])}</div>
+      <div class="opt"><span class="ol">Mapa da música<small>Compacto: as linhas de cada parte ficam lado a lado, sem o início da letra</small></span>${seg('density', [['normal', 'Detalhado'], ['compact', 'Compacto']])}</div>
+      <div class="opt"><span class="ol">Mapa no medley</span>${seg('medleyDensity', [['compact', 'Compacto'], ['normal', 'Detalhado']])}</div>
       ${sw('showBass', 'Mostrar baixo invertido', 'Ex.: D/F# em vez de D')}
       ${sw('showCues', 'Início da letra no mapa')}
       ${sw('showField', 'Faixa do campo harmônico')}

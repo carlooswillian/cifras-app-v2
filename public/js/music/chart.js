@@ -391,15 +391,11 @@ export function buildChart(source, opts = {}) {
     const last = form[form.length - 1];
     if (last && last.blockId === block.id && last.name === s.name) last.repeat += s.repeat;
     else form.push({ blockId: block.id, name: s.name, short: shortSectionName(s.name), kind: s.kind || sectionKind(s.name), repeat: s.repeat, key: s.key, modulation: s.modulation });
+    s.formIdx = form.length - 1;
   }
 
   // primeiro e último acorde tocados (para viradas de medley)
-  const firstSec = form.length ? blocks[form[0].blockId] : null;
-  const lastSec = form.length ? blocks[form[form.length - 1].blockId] : null;
-  const firstEv = firstSec ? firstSec.groups[0].rows[0].events[0] : null;
-  const lastGroup = lastSec ? lastSec.groups[lastSec.groups.length - 1] : null;
-  const lastRow = lastGroup ? lastGroup.rows[lastGroup.rows.length - 1] : null;
-  const lastEv = lastRow ? lastRow.events[lastRow.events.length - 1] : null;
+  const { first, last } = edges(blocks, form);
 
   return {
     parsed,
@@ -410,11 +406,35 @@ export function buildChart(source, opts = {}) {
     capo,
     blocks,
     form,
-    sections: secs.map((s) => ({ name: s.name, key: s.key, blockId: s.blockId ?? null, kind: s.kind, modulation: s.modulation })),
-    first: firstEv ? { ev: firstEv, key: firstSec.key } : null,
-    last: lastEv ? { ev: lastEv, key: lastSec.key } : null,
+    sections: secs.map((s) => ({ name: s.name, key: s.key, blockId: s.blockId ?? null, formIdx: s.formIdx ?? null, kind: s.kind, modulation: s.modulation })),
+    first,
+    last,
     totalBars: blocks.reduce((a, b) => a + b.groups.reduce((x, g) => x + g.rows.reduce((y, r) => y + r.bars.length, 0), 0), 0),
   };
+}
+
+/** Primeiro e último acorde de uma sequência de partes da forma. */
+function edges(blocks, form) {
+  if (!form.length) return { first: null, last: null };
+  const fb = blocks[form[0].blockId];
+  const lb = blocks[form[form.length - 1].blockId];
+  const firstEv = fb.groups[0].rows[0].events[0];
+  const lg = lb.groups[lb.groups.length - 1];
+  const lr = lg.rows[lg.rows.length - 1];
+  const lastEv = lr.events[lr.events.length - 1];
+  return { first: firstEv ? { ev: firstEv, key: fb.key } : null, last: lastEv ? { ev: lastEv, key: lb.key } : null };
+}
+
+/**
+ * Primeiro e último acorde considerando só as partes escolhidas no medley.
+ * @param {object} chart
+ * @param {number[]|null} parts  índices da forma (null = música inteira)
+ */
+export function partsEdges(chart, parts) {
+  const ok = Array.isArray(parts) ? parts.filter((i) => Number.isInteger(i) && i >= 0 && i < chart.form.length) : [];
+  if (!ok.length) return { first: chart.first, last: chart.last };
+  const set = new Set(ok);
+  return edges(chart.blocks, chart.form.filter((f, i) => set.has(i)));
 }
 
 /** Sequência completa (para tocar junto): forma -> grupos -> linhas -> compassos. */

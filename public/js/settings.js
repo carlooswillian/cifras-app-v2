@@ -9,6 +9,8 @@ export const DEFAULTS = {
   showBass: false,        // mostrar baixo invertido (D/F#)
   minorMode: 'relative',  // tom menor: graus pelo relativo maior (Em = 6m) | 'tonic' (Em = 1m)
   showCues: true,         // início da letra em cima de cada linha do mapa
+  density: 'normal',      // mapa da música: 'normal' (detalhado) | 'compact'
+  medleyDensity: 'compact', // mapa no medley: compacto por padrão (cabe mais, letra maior)
   showField: true,        // faixa do campo harmônico
   colorDegrees: true,     // cores por grau
   lyricChords: 'both',    // na letra: 'names' | 'degrees' | 'both'

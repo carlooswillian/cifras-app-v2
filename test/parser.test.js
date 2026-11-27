@@ -233,3 +233,18 @@ test('seção com acordes e tablatura continua no mapa', () => {
   const c = buildChart('[Intro] G D Em C\n\nE|-------3---|\nB|---3-------|\nG|-----------|\n\n[Refrão]\nC   D\nletra');
   assert.deepEqual(c.form.map((f) => f.short), ['Intro', 'Refrão']);
 });
+
+import { partsEdges } from '../public/js/music/chart.js';
+
+test('medley com partes escolhidas: virada usa a última parte escolhida', () => {
+  const c = buildChart('[Intro] G D\n[Refrão]\nC   D\nletra\n[Final] Em C');
+  assert.deepEqual(c.form.map((f) => f.short), ['Intro', 'Refrão', 'Final']);
+  const all = partsEdges(c, null);
+  assert.equal(all.first.ev.chord.raw, 'G');
+  assert.equal(all.last.ev.chord.raw, 'C');
+  const onlyChorus = partsEdges(c, [1]);
+  assert.equal(onlyChorus.first.ev.chord.raw, 'C');
+  assert.equal(onlyChorus.last.ev.chord.raw, 'D');
+  // índices inválidos são ignorados
+  assert.equal(partsEdges(c, [99]).last.ev.chord.raw, 'C');
+});

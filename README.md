@@ -26,6 +26,12 @@ O levantamento completo da versão antiga (problemas encontrados e o que mudou) 
 6. **Aa** → exibição: graus ou acordes em destaque, números ou romanos, baixo, cores, etc.
 7. **Medley**: na biblioteca, **⧉ Lado a lado** → toque nas músicas na ordem → **Abrir**.
    Ou, dentro de uma música, o botão **⧉** adiciona a um medley.
+   - **Compacto** (padrão no medley): as linhas de cada parte ficam lado a lado, sem o início da letra —
+     cabe muito mais com a letra maior. **Detalhado** volta ao mapa completo.
+   - **✂ Partes**: em cada coluna, escolha só as partes que você toca no medley (ex.: Refrão e Solo).
+     As outras somem da tela, a letra cresce, e a dica de virada passa a usar o fim da última parte
+     escolhida e o começo da primeira parte da próxima música.
+   - O modo compacto também pode ser usado numa música sozinha (**Aa** → Mapa compacto, ou em Ajustes).
 
 ### Como escrever tempos e repetições (opcional)
 

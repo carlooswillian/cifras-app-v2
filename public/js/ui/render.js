@@ -25,20 +25,40 @@ function dots(beats) {
   return '<i></i>'.repeat(Math.min(full, 16)) + (half ? '<i class="h"></i>' : '');
 }
 
+/** O mapa deve ser desenhado no modo compacto? */
+export function isDense(st, { compact = false, density = null } = {}) {
+  return (density || (compact ? st.medleyDensity : st.density)) === 'compact';
+}
+
+/** Índices válidos da forma escolhidos para o medley (null = todas as partes). */
+export function validParts(chart, parts) {
+  if (!Array.isArray(parts) || !parts.length) return null;
+  const ok = parts.filter((i) => Number.isInteger(i) && i >= 0 && i < chart.form.length);
+  return ok.length && ok.length < chart.form.length ? ok : null;
+}
+
 /**
  * Mapa da música.
+ * - compact/density: modo compacto (linhas da mesma parte seguem juntas, sem o início da letra)
+ * - parts: só algumas partes da forma (medley); partsEdit: chips da forma viram botões de escolha
  * @returns {string} HTML
  */
-export function renderChart(chart, frame, st, { editing = false, compact = false, showField = st.showField } = {}) {
+export function renderChart(chart, frame, st, { editing = false, compact = false, density = null, showField = st.showField, parts = null, partsEdit = false } = {}) {
+  const dense = isDense(st, { compact, density });
   const cls = ['chart'];
   if (editing) cls.push('editing');
+  if (dense) cls.push('dense');
+  if (partsEdit) cls.push('parts-edit');
   if (st.primary === 'names') cls.push('names-first');
   if (!st.colorDegrees) cls.push('mono');
   if (!chart.blocks.length) {
     return `<div class="${cls.join(' ')}"><div class="nochords">Nenhum acorde encontrado nesta cifra.<br>Confira se os acordes estão em linhas separadas, acima da letra.</div></div>`;
   }
   const shapesKey = transposeKey(chart.key, frame.offset) || chart.key;
-  const parts = [];
+  const incl = validParts(chart, parts);
+  const inclSet = incl ? new Set(incl) : null;
+  const shownBlocks = inclSet ? new Set(chart.form.filter((f, i) => inclSet.has(i)).map((f) => f.blockId)) : null;
+  const out = [];
 
   // topo: campo harmônico + forma
   const top = [];
@@ -46,31 +66,38 @@ export function renderChart(chart, frame, st, { editing = false, compact = false
     const field = harmonicField(shapesKey, { style: st.degreeStyle, minorMode: st.minorMode });
     top.push(`<div class="fieldstrip" title="Campo harmônico de ${esc(shapesKey.name)}">${field.map((f, i) => `<span class="${f.tonic ? 'tonic' : ''} ${st.colorDegrees ? 'g' + (i + 1) : ''}"><b style="color:var(--dc)">${esc(f.degree)}</b><i>${esc(f.chord)}</i></span>`).join('')}</div>`);
   }
-  top.push(`<div class="formstrip">${chart.form.map((f, i) => {
+  // fora do modo de escolha, partes que não entram no medley nem aparecem
+  const chips = chart.form.map((f, i) => ({ f, i })).filter(({ i }) => partsEdit || !inclSet || inclSet.has(i));
+  top.push(`<div class="formstrip">${chips.map(({ f, i }, k) => {
     const mod = f.modulation ? ` <span title="mudança de tom">↑${esc(transposeKey(f.key, frame.offset).name)}</span>` : '';
-    return `${i ? '<span class="arr">›</span>' : ''}<span class="fc k-${f.kind}" data-fi="${i}">${esc(f.short)}${f.repeat > 1 ? `<sup>×${f.repeat}</sup>` : ''}${mod}</span>`;
+    const off = inclSet && !inclSet.has(i) ? ' off' : '';
+    const tag = partsEdit ? 'button' : 'span';
+    return `${k ? '<span class="arr">›</span>' : ''}<${tag} class="fc k-${f.kind}${off}" data-fi="${i}">${partsEdit ? `<span class="ck">${off ? '' : '✓'}</span>` : ''}${esc(f.short)}${f.repeat > 1 ? `<sup>×${f.repeat}</sup>` : ''}${mod}</${tag}>`;
   }).join('')}</div>`);
-  parts.push(`<div class="chart-top">${top.join('')}</div>`);
+  out.push(`<div class="chart-top">${top.join('')}</div>`);
 
   // blocos
-  const blocks = chart.blocks.map((b) => {
+  const blocks = chart.blocks.filter((b) => !shownBlocks || shownBlocks.has(b.id)).map((b) => {
     const kind = b.kind || sectionKind(b.names[0]);
     const bKey = transposeKey(b.key, frame.offset) || b.key;
     const keyBadge = b.key.name !== chart.key.name
       ? `<span class="kb">Tom ${esc(bKey.name)} (${describeInterval((b.key.minor ? b.key.tonic.pc + 3 : b.key.tonic.pc) - (chart.key.minor ? chart.key.tonic.pc + 3 : chart.key.tonic.pc))})</span>`
       : '';
     const groups = b.groups.map((g, gi) => {
-      const rows = g.rows.map((r, ri) => renderRow(b, r, gi, ri, frame, st, chart.beatsPerBar, g.repeat > 1 && ri === g.rows.length - 1 ? g.repeat : 0)).join('');
+      const rows = g.rows.map((r, ri) => renderRow(b, r, gi, ri, frame, st, chart.beatsPerBar, g.repeat > 1 && ri === g.rows.length - 1 ? g.repeat : 0, dense)).join('');
       return g.repeat > 1 ? `<div class="group rep" title="Repetir este trecho ${g.repeat} vezes">${rows}</div>` : `<div class="group">${rows}</div>`;
     }).join('');
     return `<section class="block k-${kind}" data-block="${b.id}"><header>${esc(b.names.join(' · '))}${keyBadge}</header>${groups}</section>`;
   }).join('');
-  parts.push(`<div class="blocks">${blocks}</div>`);
-  return `<div class="${cls.join(' ')}${compact ? ' compact' : ''}">${parts.join('')}</div>`;
+  out.push(`<div class="blocks">${blocks}</div>`);
+  return `<div class="${cls.join(' ')}${compact ? ' compact' : ''}">${out.join('')}</div>`;
 }
 
-function renderRow(block, row, gi, ri, frame, st, bpb, groupRepeat = 0) {
-  const cue = st.showCues && row.cue ? `<div class="cue">${esc(row.cue)}</div>` : (row.label ? `<div class="cue lbl">${esc(row.label)}</div>` : '');
+function renderRow(block, row, gi, ri, frame, st, bpb, groupRepeat = 0, dense = false) {
+  // no modo compacto as linhas seguem uma ao lado da outra, sem o início da letra
+  const cue = dense
+    ? (row.label ? `<span class="cue lbl">${esc(row.label)}</span>` : '')
+    : (st.showCues && row.cue ? `<div class="cue">${esc(row.cue)}</div>` : (row.label ? `<div class="cue lbl">${esc(row.label)}</div>` : ''));
   const bars = row.bars.map((bar, bi) => {
     const frac = bar.partial ? Math.max(0.25, bar.beats / bpb) : 1;
     const items = bar.items.map((it, ii) => {
@@ -92,7 +119,7 @@ function renderRow(block, row, gi, ri, frame, st, bpb, groupRepeat = 0) {
 }
 
 /** Largura mínima (em "em") de uma coluna do mapa para não quebrar linhas de até 4 compassos. */
-export function chartMinColEm(chart) {
+export function chartMinColEm(chart, dense = false) {
   let maxBars = 1;
   let hasRpt = false;
   for (const b of chart.blocks) {
@@ -105,7 +132,7 @@ export function chartMinColEm(chart) {
       }
     }
   }
-  return maxBars * 3.8 + 1.3 + (hasRpt ? 2.2 : 0);
+  return maxBars * (dense ? 3 : 3.8) + 1.3 + (hasRpt ? 2.2 : 0);
 }
 
 /** Índice de eventos por id (para editar tempos ao tocar no acorde). */
@@ -134,8 +161,10 @@ function segments(lyric, toks) {
   return segs;
 }
 
-export function renderLyrics(chart, frame, st) {
+export function renderLyrics(chart, frame, st, { parts = null } = {}) {
   const parsed = chart.parsed;
+  const incl = validParts(chart, parts);
+  const inclSet = incl ? new Set(incl) : null;
   const mode = st.lyricChords || 'both';
   const cls = ['lyrics'];
   if (mode === 'degrees') cls.push('deg-only');
@@ -151,6 +180,7 @@ export function renderLyrics(chart, frame, st) {
   };
   const html = parsed.sections.map((s, si) => {
     if (s.kind === 'tab' && !st.showTabs) return '';
+    if (inclSet && !(chart.sections[si] && inclSet.has(chart.sections[si].formIdx))) return '';
     const key = (chart.sections[si] && chart.sections[si].key) || chart.key;
     const lines = s.lines.map((ln) => {
       switch (ln.kind) {

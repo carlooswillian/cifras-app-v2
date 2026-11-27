@@ -244,6 +244,30 @@ textarea { resize: vertical; }
 .it.explicit::after { content: ""; position: absolute; top: .18em; right: .18em; width: .22em; height: .22em; border-radius: 50%; background: var(--warn); }
 .chart .nochords { color: var(--muted); padding: 2em 0; text-align: center; font-size: .8em; }
 
+/* ---------- mapa compacto (padrão no medley) ----------
+   As linhas de uma mesma parte seguem uma ao lado da outra (sem o início da letra),
+   e cada acorde ocupa menos altura: cabe muito mais com a fonte maior. */
+.dense .block { margin-bottom: .45em; padding: .12em 0 .18em .45em; }
+.dense .block > header { margin-bottom: .14em; }
+.dense .group { display: flex; flex-wrap: wrap; align-items: center; gap: .24em .6em; }
+.dense .group.rep { margin: .1em 0 .18em; }
+.dense .row { margin: 0; display: flex; align-items: center; gap: .25em; max-width: 100%; }
+.dense .row .cue.lbl { font-size: .55em; }
+.dense .row .rpt { margin-left: .2em; font-size: .68em; }
+.dense .bar { --barw: 3em; min-height: 1.95em; }
+.dense .it { padding: .04em .16em .04em .2em; }
+.dense .it .dg { font-size: 1.12em; }
+.dense .it .cn { font-size: .56em; line-height: 1.1; }
+.dense .it .bt { gap: .14em; margin-top: .08em; }
+.dense .it .bt i { width: .22em; height: .22em; }
+.dense .it .bt i.h { width: .14em; height: .14em; margin-top: .04em; }
+
+/* escolher as partes que entram no medley */
+.formstrip button.fc { font: inherit; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: .3em; min-height: 2.3em; padding: .15em .55em; }
+.formstrip .fc.off { opacity: .4; text-decoration: line-through; background: transparent; }
+.formstrip .fc .ck { display: inline-grid; place-items: center; width: 1.15em; height: 1.15em; border-radius: .25em; border: .09em solid currentColor; font-size: .9em; text-decoration: none; }
+.parts-edit .formstrip { gap: .35em; }
+
 /* cores por grau */
 .g1 { --dc: var(--d1); } .g2 { --dc: var(--d2); } .g3 { --dc: var(--d3); } .g4 { --dc: var(--d4); }
 .g5 { --dc: var(--d5); } .g6 { --dc: var(--d6); } .g7 { --dc: var(--d7); } .gx { --dc: var(--dx); }
@@ -286,6 +310,8 @@ textarea { resize: vertical; }
 .mcol-head .ctl { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
 .mcol-head .stepper button { width: 32px; min-height: 32px; font-size: 18px; }
 .mcol-head .stepper .val { min-width: 50px; font-size: 13px; }
+.mcol-head .partsbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 13px; color: var(--warn); font-weight: 650; }
+.mcol-head .pcount { font-size: 12px; color: var(--warn); font-weight: 700; }
 .mcol-body { flex: 1; min-height: 0; position: relative; }
 .mcol-body .chart { font-size: 16px; }
 .mcol-body .chart .blocks { column-width: 100em; }

@@ -140,7 +140,13 @@ export async function saveMedley(m) {
   const rec = {
     id: m.id,
     name: (m.name || '').trim() || 'Medley',
-    items: (m.items || []).map((it) => ({ songId: it.songId, transpose: Number(it.transpose) || 0, capo: it.capo == null ? null : Number(it.capo) })),
+    items: (m.items || []).map((it) => ({
+      songId: it.songId,
+      transpose: Number(it.transpose) || 0,
+      capo: it.capo == null ? null : Number(it.capo),
+      // partes da música que entram no medley (índices da forma); null = música inteira
+      parts: Array.isArray(it.parts) && it.parts.length ? it.parts.map(Number).filter(Number.isInteger) : null,
+    })),
     notes: m.notes || '',
     createdAt: m.createdAt || now,
     updatedAt: now,
