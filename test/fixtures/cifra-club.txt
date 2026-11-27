@@ -1,0 +1,58 @@
+Canção do TesteBanda Exemplo
+Composição de Fulano de Tal. Essa informação está errada? Nos avise.
+Tom: A (forma dos acordes no tom de G)
+Capotraste na 2ª casa
+
+[Intro] G  D/F#  Em7  C7M(9)
+
+[Tab - Intro]
+Parte 1 de 2
+E|-------------------|
+B|---3---3---2---1---|
+G|-------------------|
+
+[Primeira Parte]
+
+G               D/F#
+  Hoje eu acordei cantando
+Em7             C9
+  Uma canção de paz
+G               D/F#
+  Hoje eu acordei sorrindo
+Em7             C9
+  Pra nunca mais voltar atrás
+
+[Refrão]
+
+C        G
+Aleluia, aleluia
+D          Em
+Meu coração vai cantar
+C        G
+Aleluia, aleluia
+D4    D
+Pra sempre vou te louvar
+
+[Segunda Parte]
+
+G               D/F#
+  Outra linha de exemplo
+Em              C
+  Com os mesmos acordes
+G               D/F#
+  Pra testar o agrupamento
+Em              C
+  Do mapa da canção
+
+[Refrão]
+
+C        G
+Aleluia, aleluia
+D          Em
+Meu coração vai cantar
+C        G
+Aleluia, aleluia
+D4    D
+Pra sempre vou te louvar
+
+[Final] G  D/F#  Em  C  G

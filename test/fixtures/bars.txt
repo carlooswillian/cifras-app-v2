@@ -1,0 +1,22 @@
+Título: Teste de Barras
+Artista: Ninguém
+Compasso: 4/4
+BPM: 72
+
+[Intro]
+| G | D Em | C . . D | % |
+
+[Verso]
+G:2  D:2   Em        C
+Linha um de teste agora
+G    D     C:2 D:2
+Linha dois de teste
+
+[Refrão] (2x)
+C    D    G
+Repete este refrão
+
+[Ponte]
+Am   C    D
+Ponte com um
+(2x)

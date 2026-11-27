@@ -1,0 +1,8 @@
+{title: Teste Pro}
+{artist: Alguém Pro}
+{key: D}
+{tempo: 90}
+{soc}
+[D]Linha [A]um de [Bm]teste a[G]gora
+[D]Linha [A]dois do [G]mesmo
+{eoc}

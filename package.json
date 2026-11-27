@@ -1,0 +1,17 @@
+{
+  "name": "cifras-app-v2",
+  "version": "3.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Banco de cifras pessoal: graus do campo harmônico, tempos por acorde, mapa em uma página e medleys lado a lado. Hospedado na Cloudflare (Workers + D1).",
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "dev": "wrangler dev",
+    "db:local": "wrangler d1 migrations apply cifras-db --local",
+    "db:remote": "wrangler d1 migrations apply cifras-db --remote",
+    "deploy": "wrangler d1 migrations apply cifras-db --remote && wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.168.0"
+  }
+}

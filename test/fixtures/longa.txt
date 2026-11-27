@@ -1,0 +1,100 @@
+Rio de Luz
+Grupo Exemplo
+Tom: E
+
+[Intro] E  B  C#m  A  (2x)
+
+[Primeira Parte]
+
+E                    B
+  Quando a noite vem chegando
+C#m                  A
+  E o silêncio toma o chão
+E                    B
+  Uma luz vai me guiando
+C#m           A          B
+  Pelo meio da escuridão
+
+[Pré-Refrão]
+
+A           B
+  E eu sei, eu sei
+C#m         B
+  Que não estou sozinho
+A           B
+  E eu sei, eu sei
+A                B
+  Que há luz no caminho
+
+[Refrão]
+
+E          B
+Rio de luz
+C#m        A
+Corre em mim
+E          B
+Rio de luz
+C#m      A      B
+Até o fim
+
+[Interlúdio] A  B  C#m  B  A  B  E
+
+[Segunda Parte]
+
+E                    B
+  Outra estrofe de exemplo
+C#m                  A
+  Pra testar a repetição
+E                    B
+  Mesma base, outro momento
+C#m           A          B
+  Mesmo acorde, outra canção
+
+[Pré-Refrão]
+
+A           B
+  E eu sei, eu sei
+C#m         B
+  Que não estou sozinho
+A           B
+  E eu sei, eu sei
+A                B
+  Que há luz no caminho
+
+[Refrão] (2x)
+
+E          B
+Rio de luz
+C#m        A
+Corre em mim
+E          B
+Rio de luz
+C#m      A      B
+Até o fim
+
+[Ponte]
+
+A            E/G#
+  Ninguém vai apagar
+F#m          E
+  Essa chama em mim
+A            E/G#
+  Ninguém vai apagar
+F#m     B
+  Até o fim
+(4x)
+
+Tom: F#
+
+[Refrão]
+
+F#         C#
+Rio de luz
+D#m        B
+Corre em mim
+F#         C#
+Rio de luz
+D#m      B      C#
+Até o fim
+
+[Final] B  C#  F#

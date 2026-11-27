@@ -1,0 +1,19 @@
+{
+  // Configuração do Cloudflare Workers. Deploy: `npm run deploy` (veja o README).
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "cifras-app-v2",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"],
+    "not_found_handling": "single-page-application"
+  },
+  // Banco D1 já criado na conta da Cloudflare.
+  // As tabelas são criadas automaticamente pelo Worker no primeiro uso.
+  "d1_databases": [
+    { "binding": "DB", "database_name": "cifras-db", "database_id": "b2df2d03-4c80-456d-a0b9-9f5d1fdb1378" }
+  ],
+  "observability": { "enabled": true }
+}
