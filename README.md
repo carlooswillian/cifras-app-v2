@@ -55,7 +55,7 @@ Tudo cabe no plano gratuito.
    O banco D1 `cifras-db` é criado automaticamente no primeiro deploy, e as tabelas na primeira sincronização.
 4. No Worker criado → **Settings** → **Variables and Secrets** → **Add**:
    tipo **Secret**, nome `APP_PASSWORD`, valor = a senha que você quiser → **Deploy**.
-5. Abra o endereço `https://cifras.<seu-subdominio>.workers.dev` no tablet → **Ajustes** → digite a senha.
+5. Abra o endereço `https://cifras-app-v2.<seu-subdominio>.workers.dev` no tablet → **Ajustes** → digite a senha.
 6. No tablet: menu do navegador → **Adicionar à tela de início** (abre como app, em tela cheia).
 
 Depois disso, cada alteração enviada ao GitHub publica sozinha.

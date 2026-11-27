@@ -1,7 +1,7 @@
 {
   // Configuração do Cloudflare Workers. Deploy: `npm run deploy` (veja o README).
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "cifras",
+  "name": "cifras-app-v2",
   "main": "src/worker.js",
   "compatibility_date": "2026-11-01",
   "assets": {
