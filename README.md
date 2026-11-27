@@ -20,6 +20,9 @@ O levantamento completo da versão antiga (problemas encontrados e o que mudou) 
 1. **＋ Nova cifra** → cole a cifra inteira (do Cifra Club, por exemplo). Título, artista, tom e
    capotraste são detectados sozinhos; a prévia do mapa aparece ao lado.
 2. **Salvar** → abre a música no **Mapa** (graus + compassos). **Letra** mostra a letra com os acordes.
+   Partes repetidas aparecem **uma vez só** (mesmo nome, como "Refrão", ou mesmos acordes); os chips no
+   topo mostram a ordem da música, quantas vezes tocar cada parte (×2) e **≈** quando aquela vez tem
+   alguma diferença (a **Letra** mostra cada vez como está escrita). Dá para desligar em Ajustes.
 3. Na barra de cima: **tom** (− +) transpõe o que soa; **capo** (− +) muda as formas; **↺** volta ao original.
 4. **⏱ Tempos** → toque num acorde e escolha quantos tempos ele dura (ou marque "linha inteira").
 5. **▶** toca junto no andamento. Toque no botão **bpm** no ritmo da música para marcar o andamento (*tap tempo*).

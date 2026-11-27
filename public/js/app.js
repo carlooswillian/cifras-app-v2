@@ -12,7 +12,7 @@ import { Player, tapTempo } from './ui/player.js';
 import { $, $$, esc, toast, modal, confirmBox, popover, uid, debounce, download } from './ui/dom.js';
 import { fetchOldSongs, convertOldSong, OLD_API_URL } from './legacy.js';
 
-export const VERSION = '3.1.0';
+export const VERSION = '3.2.0';
 const main = $('#main');
 let cleanups = [];
 const onLeave = (fn) => cleanups.push(fn);
@@ -228,7 +228,7 @@ function pickSongs({ title, onDone, askName = false, exclude = [] }) {
 // Tela da música (palco)
 
 function chartFor(song, st = settings()) {
-  return buildChart(song.source || '', { key: song.key, timeSig: song.timeSig, capo: song.capo, minorMode: st.minorMode, showBass: st.showBass });
+  return buildChart(song.source || '', { key: song.key, timeSig: song.timeSig, capo: song.capo, minorMode: st.minorMode, showBass: st.showBass, mergeByName: st.mergeSameName !== false });
 }
 
 function songScreen(id) {
@@ -493,7 +493,7 @@ Em            C
     const cur = collect();
     const st = settings();
     let chart;
-    try { chart = buildChart(p, { key: cur.key, timeSig: cur.timeSig, capo: cur.capo, minorMode: st.minorMode, showBass: st.showBass }); } catch (e) { console.error(e); return; }
+    try { chart = buildChart(p, { key: cur.key, timeSig: cur.timeSig, capo: cur.capo, minorMode: st.minorMode, showBass: st.showBass, mergeByName: st.mergeSameName !== false }); } catch (e) { console.error(e); return; }
     const frame = viewFrame(chart);
     const k = chart.key.name;
     $('#keyHint').textContent = cur.key ? (parseKey(cur.key) ? '' : 'tom não reconhecido') : `detectado: ${k}${chart.capo ? ` (soa em ${frame.soundingKey.name})` : ''}`;
@@ -720,6 +720,7 @@ function settingsView() {
       <div class="opt"><span class="ol">Na letra</span>${seg('lyricChords', [['both', 'Acorde + grau'], ['names', 'Só acorde'], ['degrees', 'Só grau']])}</div>
       <div class="opt"><span class="ol">Mapa da música<small>Compacto: as linhas de cada parte ficam lado a lado, sem o início da letra</small></span>${seg('density', [['normal', 'Detalhado'], ['compact', 'Compacto']])}</div>
       <div class="opt"><span class="ol">Mapa no medley</span>${seg('medleyDensity', [['compact', 'Compacto'], ['normal', 'Detalhado']])}</div>
+      <div class="opt"><span class="ol">Partes repetidas<small>Refrão, 1ª Parte… com o mesmo nome aparecem uma vez só; "≈" na ordem da música marca a vez que tem alguma diferença</small></span>${seg('mergeSameName', [[true, 'Uma vez só'], [false, 'Cada vez']])}</div>
       ${sw('showBass', 'Mostrar baixo invertido', 'Ex.: D/F# em vez de D')}
       ${sw('showCues', 'Início da letra no mapa')}
       ${sw('showField', 'Faixa do campo harmônico')}
@@ -745,7 +746,13 @@ function settingsView() {
     </div>
   </div>`;
 
-  $$('[data-set] button').forEach((b) => { b.onclick = () => { setSetting(b.closest('[data-set]').dataset.set, b.dataset.v); settingsView(); }; });
+  $$('[data-set] button').forEach((b) => {
+    b.onclick = () => {
+      const raw = b.dataset.v;
+      setSetting(b.closest('[data-set]').dataset.set, raw === 'true' ? true : raw === 'false' ? false : raw);
+      settingsView();
+    };
+  });
   $$('[data-sw]').forEach((b) => { b.onclick = () => { const k = b.dataset.sw; setSetting(k, !settings()[k]); b.classList.toggle('on', settings()[k]); }; });
   $('#resetDisp').onclick = () => { Object.entries(DEFAULTS).forEach(([k, v]) => setSetting(k, v)); settingsView(); };
   $('#savePass').onclick = async () => {

@@ -11,6 +11,7 @@ export const DEFAULTS = {
   showCues: true,         // início da letra em cima de cada linha do mapa
   density: 'normal',      // mapa da música: 'normal' (detalhado) | 'compact'
   medleyDensity: 'compact', // mapa no medley: compacto por padrão (cabe mais, letra maior)
+  mergeSameName: true,    // partes com o mesmo nome (Refrão, 1ª Parte...) aparecem uma vez só
   showField: true,        // faixa do campo harmônico
   colorDegrees: true,     // cores por grau
   lyricChords: 'both',    // na letra: 'names' | 'degrees' | 'both'

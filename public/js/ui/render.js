@@ -72,7 +72,8 @@ export function renderChart(chart, frame, st, { editing = false, compact = false
     const mod = f.modulation ? ` <span title="mudança de tom">↑${esc(transposeKey(f.key, frame.offset).name)}</span>` : '';
     const off = inclSet && !inclSet.has(i) ? ' off' : '';
     const tag = partsEdit ? 'button' : 'span';
-    return `${k ? '<span class="arr">›</span>' : ''}<${tag} class="fc k-${f.kind}${off}" data-fi="${i}">${partsEdit ? `<span class="ck">${off ? '' : '✓'}</span>` : ''}${esc(f.short)}${f.repeat > 1 ? `<sup>×${f.repeat}</sup>` : ''}${mod}</${tag}>`;
+    const vr = f.variant ? '<span class="vr" title="Desta vez tem pequenas diferenças (veja na Letra)">≈</span>' : '';
+    return `${k ? '<span class="arr">›</span>' : ''}<${tag} class="fc k-${f.kind}${off}" data-fi="${i}">${partsEdit ? `<span class="ck">${off ? '' : '✓'}</span>` : ''}${esc(f.short)}${vr}${f.repeat > 1 ? `<sup>×${f.repeat}</sup>` : ''}${mod}</${tag}>`;
   }).join('')}</div>`);
   out.push(`<div class="chart-top">${top.join('')}</div>`);
 

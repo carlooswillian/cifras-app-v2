@@ -248,3 +248,49 @@ test('medley com partes escolhidas: virada usa a última parte escolhida', () =>
   // índices inválidos são ignorados
   assert.equal(partsEdges(c, [99]).last.ev.chord.raw, 'C');
 });
+
+test('partes com o mesmo nome aparecem uma vez só (mesmo com pequenas diferenças)', () => {
+  const c = buildChart(fx('uma-por-linha.txt'));
+  const names = c.blocks.map((b) => b.names.join(' · '));
+  // cada nome aparece em um único bloco
+  for (const n of ['Primeira Parte', 'Segunda Parte', 'Refrão', 'Terceira Parte']) {
+    assert.equal(names.filter((x) => x.split(' · ').includes(n)).length, 1, n);
+  }
+  // a ordem da música continua completa
+  assert.deepEqual(c.form.map((f) => f.short), ['Intro', '1ª Parte', '2ª Parte', 'Refrão', '1ª Parte', '2ª Parte', 'Refrão', '3ª Parte', 'Solo', '3ª Parte']);
+  // a 1ª "Primeira Parte" é a mesma parte tocada 2 vezes; a 2ª, uma vez só: vira ×2 no chip
+  assert.equal(c.form[1].repeat, 2);
+  assert.equal(c.form[4].repeat, 1);
+  assert.equal(c.form[4].variant, false);
+  // desligando, volta a separar as versões diferentes
+  const sep = buildChart(fx('uma-por-linha.txt'), { mergeByName: false });
+  assert.ok(sep.blocks.length > c.blocks.length);
+});
+
+test('mesmo nome com acorde diferente: um bloco só, e "≈" na vez diferente', () => {
+  const src = '[Refrão]\nC   D\nlinha a\nEm  C\nlinha b\n\n[Ponte]\nAm  D\nponte\n\n[Refrão]\nC   D\nlinha a\nEm  Bm\nlinha b';
+  const c = buildChart(src);
+  assert.equal(c.blocks.filter((b) => b.names.includes('Refrão')).length, 1);
+  assert.deepEqual(c.form.map((f) => [f.short, f.variant]), [['Refrão', false], ['Ponte', false], ['Refrão', true]]);
+});
+
+test('mesma parte escrita com (2x) vira ×2 na forma, sem duplicar o bloco', () => {
+  const src = '[Refrão]\nC   G\nlinha a\nD   Em\nlinha b\n\n[Ponte]\nAm  D\nponte\n\n[Refrão]\nC   G\nlinha a\nD   Em\nlinha b (2x)';
+  const c = buildChart(src);
+  assert.equal(c.blocks.filter((b) => b.names.includes('Refrão')).length, 1);
+  const last = c.form[c.form.length - 1];
+  assert.equal(last.short, 'Refrão');
+  assert.equal(last.repeat, 2);
+  assert.equal(last.variant, false);
+});
+
+test('mesmos acordes com nomes diferentes e repetições diferentes: um bloco, ×n em cada chip', () => {
+  const c = buildChart(fx('cristo-like.txt'));
+  const refrao = c.blocks.filter((b) => b.names.includes('Refrão'));
+  assert.equal(refrao.length, 1);
+  assert.deepEqual(refrao[0].names, ['Refrão', 'Refrão Final']);
+  const chips = c.form.filter((f) => f.blockId === refrao[0].id).map((f) => `${f.short} x${f.repeat}`);
+  assert.deepEqual(chips, ['Refrão x8', 'Refrão final x4']);
+  // o bloco mostra a parte uma vez (as vezes ficam nos chips)
+  assert.equal(refrao[0].groups[0].rows[0].repeat, 1);
+});

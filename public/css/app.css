@@ -208,6 +208,7 @@ textarea { resize: vertical; }
 .formstrip { display: flex; flex-wrap: wrap; gap: .25em; align-items: center; font-size: .66em; }
 .formstrip .fc { padding: .12em .5em; border-radius: .5em; border: 1px solid color-mix(in srgb, var(--kc) 60%, transparent); color: var(--kc); background: color-mix(in srgb, var(--kc) 12%, transparent); font-weight: 700; white-space: nowrap; }
 .formstrip .fc sup { font-size: .75em; margin-left: .15em; }
+.formstrip .fc .vr { margin-left: .2em; opacity: .85; font-weight: 800; }
 .formstrip .fc.now { background: var(--kc); color: var(--bg); }
 .formstrip .arr { color: var(--dim); font-size: .8em; }
 .blocks { flex: 1; min-height: 0; column-width: 19.5em; column-gap: 1.1em; column-fill: balance; }
