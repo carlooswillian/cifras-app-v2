@@ -364,24 +364,96 @@ export function buildChart(source, opts = {}) {
   }
 
   // 5) blocos únicos e forma
+  //    - seções com exatamente os mesmos acordes viram um bloco só (mesmo com nomes diferentes);
+  //    - seções com o MESMO NOME (no mesmo tom) também aparecem uma vez só, mesmo com pequenas
+  //      diferenças entre as repetições: mostra a versão mais comum, e as vezes que diferem
+  //      ganham "≈" na forma (a letra completa continua mostrando cada vez como está escrita).
+  const mergeByName = opts.mergeByName !== false;
+  const sigOf = (groups) => groupsSig(groups, showBass);
+  // "núcleo" da seção: tira a repetição de fora (seção inteira com (2x)) para comparar
+  const coreOf = (groups) => {
+    if (groups.length === 1 && groups[0].repeat > 1) return { core: [{ ...groups[0], repeat: 1 }], outer: groups[0].repeat };
+    if (groups.length === 1 && groups[0].rows.length === 1 && groups[0].rows[0].repeat > 1) {
+      const r = groups[0].rows[0];
+      return { core: [{ ...groups[0], rows: [{ ...r, repeat: 1 }] }], outer: r.repeat };
+    }
+    return { core: groups, outer: 1 };
+  };
+  const withEvents = secs.filter((s) => s.events.length);
+  for (const s of withEvents) {
+    s.sig = s.key.name + '|' + sigOf(s.groups);
+    const c = coreOf(s.groups);
+    s.core = c.core;
+    s.outer = c.outer;
+    s.coreSig = s.key.name + '|' + sigOf(c.core);
+    s.nameKey = normName(s.name) + '|' + s.key.name;
+  }
+  // representante de cada nome: a versão mais frequente (empate: a primeira que aparece)
+  const rep = new Map();
+  if (mergeByName) {
+    const byName = new Map();
+    for (const s of withEvents) {
+      if (!byName.has(s.nameKey)) byName.set(s.nameKey, []);
+      byName.get(s.nameKey).push(s);
+    }
+    for (const [k, list] of byName) {
+      const count = new Map();
+      for (const s of list) count.set(s.coreSig, (count.get(s.coreSig) || 0) + 1);
+      let best = list[0];
+      for (const s of list) if (count.get(s.coreSig) > count.get(best.coreSig)) best = s;
+      rep.set(k, best);
+    }
+  }
+
+  // Cada seção entra num bloco:
+  //  - juntando (padrão): pelo "núcleo" dos acordes (qualquer nome: Intro = Final, Refrão = Refrão Final)
+  //    e, com o mesmo nome, pela versão mais comum daquele nome (as outras viram variação "≈");
+  //  - sem juntar: só seções exatamente iguais.
   const blocks = [];
-  const bySig = new Map();
+  const byKey = new Map();
+  for (const s of withEvents) {
+    const r = mergeByName ? rep.get(s.nameKey) : null;
+    const ckey = mergeByName ? (r ? r.coreSig : s.coreSig) : s.sig;
+    let b = byKey.get(ckey);
+    if (!b) {
+      // origem: a primeira seção da música que tem exatamente esse conteúdo (é a que aparece no bloco)
+      const origin = mergeByName ? withEvents.find((x) => x.coreSig === ckey) : s;
+      b = { id: blocks.length, names: [], key: origin.key, groups: origin.groups, kind: origin.kind, modulation: origin.modulation, sectionIdx: [], origin, members: [] };
+      blocks.push(b);
+      byKey.set(ckey, b);
+    }
+    s.block = b;
+    s.variant = mergeByName && s.coreSig !== ckey;
+    b.members.push(s);
+    if (!b.names.includes(s.name)) b.names.push(s.name);
+    b.sectionIdx.push(s.idx);
+  }
+  for (const b of blocks) {
+    const exact = b.members.filter((m) => !m.variant);
+    // se cada vez repete um número diferente de vezes (×8 e ×4), o bloco mostra a parte uma vez
+    // e cada chip da forma diz quantas vezes tocar
+    b.showCore = mergeByName && new Set(exact.map((m) => m.outer)).size > 1;
+    if (b.showCore) b.groups = b.origin.core;
+    // fontes no texto (para o ⏱ Tempos valer em todas as cópias iguais)
+    for (const m of exact) if (m !== b.origin) mergeGroupsSrcs(b.origin.core, m.core);
+  }
+  const chipRepeat = (s) => {
+    const b = s.block;
+    if (b.showCore) return s.repeat * s.outer;
+    if (s.variant) return s.repeat;
+    const ratio = s.outer / b.origin.outer;
+    return Number.isInteger(ratio) && ratio >= 1 ? s.repeat * ratio : s.repeat;
+  };
+
   const form = [];
   for (const s of secs) {
-    let block = null;
-    if (s.events.length) {
-      const sig = s.key.name + '|' + groupsSig(s.groups, showBass);
-      block = bySig.get(sig);
-      if (!block) {
-        block = { id: blocks.length, names: [s.name], key: s.key, groups: s.groups, kind: s.kind, modulation: s.modulation, sectionIdx: [s.idx] };
-        blocks.push(block);
-        bySig.set(sig, block);
-      } else {
-        if (!block.names.includes(s.name)) block.names.push(s.name);
-        block.sectionIdx.push(s.idx);
-        mergeGroupsSrcs(block.groups, s.groups);
-      }
-    } else if (s.kind !== 'tab') {
+    let block = s.block || null;
+    let repeat = s.repeat;
+    let variant = false;
+    if (block) {
+      repeat = chipRepeat(s);
+      variant = s.variant;
+    } else if (!s.events.length && s.kind !== 'tab') {
       // seção sem acordes com nome de uma anterior (ex.: refrão repetido só com letra)
       const prev = secs.find((p) => p !== s && p.idx < s.idx && p.blockId != null && normName(p.name) === normName(s.name));
       if (prev) block = blocks[prev.blockId];
@@ -389,10 +461,16 @@ export function buildChart(source, opts = {}) {
     if (!block) continue;
     s.blockId = block.id;
     const last = form[form.length - 1];
-    if (last && last.blockId === block.id && last.name === s.name) last.repeat += s.repeat;
-    else form.push({ blockId: block.id, name: s.name, short: shortSectionName(s.name), kind: s.kind || sectionKind(s.name), repeat: s.repeat, key: s.key, modulation: s.modulation });
+    if (last && last.blockId === block.id && last.name === s.name) {
+      last.repeat += repeat;
+      last.variant = last.variant || variant;
+    } else {
+      form.push({ blockId: block.id, name: s.name, short: shortSectionName(s.name), kind: s.kind || sectionKind(s.name), repeat, key: s.key, modulation: s.modulation, variant });
+    }
     s.formIdx = form.length - 1;
   }
+  for (const b of blocks) { delete b.origin; delete b.members; delete b.showCore; }
+  for (const s of secs) delete s.block;
 
   // primeiro e último acorde tocados (para viradas de medley)
   const { first, last } = edges(blocks, form);

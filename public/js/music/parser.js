@@ -56,7 +56,8 @@ export function shortSectionName(name) {
     [/^(verso|verse|estrofe)/, 'Verso'],
   ];
   for (const [re, label] of rules) {
-    if (re.test(n)) return label + (num && !/ª/.test(label) ? ' ' + num : '');
+    // "Refrão Final" continua dizendo que é o final
+    if (re.test(n)) return label + (num && !/ª/.test(label) ? ' ' + num : '') + (/\sfinal$/.test(n) && label !== 'Final' ? ' final' : '');
   }
   return name.length > 12 ? name.slice(0, 11) + '…' : name;
 }
@@ -335,7 +336,8 @@ export function parseHeader(line) {
   }
   if (t.length <= 40) {
     const { name, repeat } = stripRepeatFromName(t.replace(/:$/, ''));
-    if (name && isSectionName(name) && name.split(/\s+/).length <= 4 && !analyzeChordLine(t)) {
+    // sem colchetes e sem ":", só vale com inicial maiúscula ("Refrão", "REFRÃO"): "ponte" minúsculo é letra
+    if (name && /^[A-ZÀ-Ý]/.test(name) && isSectionName(name) && name.split(/\s+/).length <= 4 && !analyzeChordLine(t)) {
       return { name, repeat, rest: '', restCol: -1 };
     }
   }
