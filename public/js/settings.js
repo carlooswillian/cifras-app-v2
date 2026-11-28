@@ -12,6 +12,11 @@ export const DEFAULTS = {
   density: 'normal',      // mapa da música: 'normal' (detalhado) | 'compact'
   medleyDensity: 'compact', // mapa no medley: compacto por padrão (cabe mais, letra maior)
   mergeSameName: true,    // partes com o mesmo nome (Refrão, 1ª Parte...) aparecem uma vez só
+  showForm: true,         // ordem da música (chips Intro › Refrão…) em cima do mapa
+  showVirada: true,       // dica de virada no medley (no topo da música seguinte)
+  showControls: true,     // controles de tom/capo/partes no medley
+  showNames: true,        // nome do acorde embaixo do grau
+  showBeats: true,        // bolinhas de tempo
   showField: true,        // faixa do campo harmônico
   colorDegrees: true,     // cores por grau
   lyricChords: 'both',    // na letra: 'names' | 'degrees' | 'both'

@@ -22,7 +22,7 @@ function searchSize(el, fits, min, max) {
  * @param {number} [opts.minColPx]  largura mínima de uma coluna, para decidir quantas tentar
  * @returns {{size:number, cols:number, fits:boolean}}
  */
-export function fitToBox(el, { min = 11, max = 44, colSel = null, minColPx = 300, maxCols = 4, minColEm = 0, gapEm = 1.1, padEm = 1.4, scrollClass = 'scroll' } = {}) {
+export function fitToBox(el, { min = 11, max = 44, colSel = null, minColPx = 300, maxCols = 4, minColEm = 0, gapEm = 1.1, padEm = 1.4, scrollClass = 'scroll', scrollCols = null } = {}) {
   if (!el || !el.isConnected) return { size: 0, cols: 0, fits: false };
   el.classList.remove(scrollClass);
   const colEl = colSel ? el.querySelector(colSel) : el;
@@ -41,7 +41,8 @@ export function fitToBox(el, { min = 11, max = 44, colSel = null, minColPx = 300
     if (size != null && size > best.size + 0.4) best = { size, cols: n };
   }
   if (best.size < 0) {
-    if (colEl) { colEl.style.columnCount = String(nMax); colEl.style.columnWidth = 'auto'; }
+    // não coube: fonte mínima legível e rolagem (no medley, 1 coluna só para rolar na ordem)
+    if (colEl) { colEl.style.columnCount = String(scrollCols || nMax); colEl.style.columnWidth = 'auto'; }
     el.style.fontSize = min + 'px';
     el.classList.add(scrollClass);
     return { size: min, cols: nMax, fits: false };
