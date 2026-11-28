@@ -1,7 +1,7 @@
 // Service worker: deixa o app abrir sem internet (palco, igreja, ensaio).
 // Estratégia: rede primeiro (sempre pega a versão nova), com cópia local de reserva.
 
-const CACHE = 'cifras-v3.2';
+const CACHE = 'cifras-v3.3';
 const ASSETS = [
   './', 'index.html', 'css/app.css', 'manifest.webmanifest',
   'js/app.js', 'js/store.js', 'js/settings.js', 'js/legacy.js',

@@ -51,6 +51,8 @@ export function renderChart(chart, frame, st, { editing = false, compact = false
   if (partsEdit) cls.push('parts-edit');
   if (st.primary === 'names') cls.push('names-first');
   if (!st.colorDegrees) cls.push('mono');
+  if (st.showNames === false && st.primary !== 'names') cls.push('no-names');
+  if (st.showBeats === false) cls.push('no-beats');
   if (!chart.blocks.length) {
     return `<div class="${cls.join(' ')}"><div class="nochords">Nenhum acorde encontrado nesta cifra.<br>Confira se os acordes estão em linhas separadas, acima da letra.</div></div>`;
   }
@@ -66,16 +68,19 @@ export function renderChart(chart, frame, st, { editing = false, compact = false
     const field = harmonicField(shapesKey, { style: st.degreeStyle, minorMode: st.minorMode });
     top.push(`<div class="fieldstrip" title="Campo harmônico de ${esc(shapesKey.name)}">${field.map((f, i) => `<span class="${f.tonic ? 'tonic' : ''} ${st.colorDegrees ? 'g' + (i + 1) : ''}"><b style="color:var(--dc)">${esc(f.degree)}</b><i>${esc(f.chord)}</i></span>`).join('')}</div>`);
   }
-  // fora do modo de escolha, partes que não entram no medley nem aparecem
-  const chips = chart.form.map((f, i) => ({ f, i })).filter(({ i }) => partsEdit || !inclSet || inclSet.has(i));
-  top.push(`<div class="formstrip">${chips.map(({ f, i }, k) => {
-    const mod = f.modulation ? ` <span title="mudança de tom">↑${esc(transposeKey(f.key, frame.offset).name)}</span>` : '';
-    const off = inclSet && !inclSet.has(i) ? ' off' : '';
-    const tag = partsEdit ? 'button' : 'span';
-    const vr = f.variant ? '<span class="vr" title="Desta vez tem pequenas diferenças (veja na Letra)">≈</span>' : '';
-    return `${k ? '<span class="arr">›</span>' : ''}<${tag} class="fc k-${f.kind}${off}" data-fi="${i}">${partsEdit ? `<span class="ck">${off ? '' : '✓'}</span>` : ''}${esc(f.short)}${vr}${f.repeat > 1 ? `<sup>×${f.repeat}</sup>` : ''}${mod}</${tag}>`;
-  }).join('')}</div>`);
-  out.push(`<div class="chart-top">${top.join('')}</div>`);
+  // ordem da música (pode ser escondida; aparece sempre ao escolher as partes do medley)
+  if (st.showForm !== false || partsEdit) {
+    // fora do modo de escolha, partes que não entram no medley nem aparecem
+    const chips = chart.form.map((f, i) => ({ f, i })).filter(({ i }) => partsEdit || !inclSet || inclSet.has(i));
+    top.push(`<div class="formstrip">${chips.map(({ f, i }, k) => {
+      const mod = f.modulation ? ` <span title="mudança de tom">↑${esc(transposeKey(f.key, frame.offset).name)}</span>` : '';
+      const off = inclSet && !inclSet.has(i) ? ' off' : '';
+      const tag = partsEdit ? 'button' : 'span';
+      const vr = f.variant ? '<span class="vr" title="Desta vez tem pequenas diferenças (veja na Letra)">≈</span>' : '';
+      return `${k ? '<span class="arr">›</span>' : ''}<${tag} class="fc k-${f.kind}${off}" data-fi="${i}">${partsEdit ? `<span class="ck">${off ? '' : '✓'}</span>` : ''}${esc(f.short)}${vr}${f.repeat > 1 ? `<sup>×${f.repeat}</sup>` : ''}${mod}</${tag}>`;
+    }).join('')}</div>`);
+  }
+  if (top.length) out.push(`<div class="chart-top">${top.join('')}</div>`);
 
   // blocos
   const blocks = chart.blocks.filter((b) => !shownBlocks || shownBlocks.has(b.id)).map((b) => {
@@ -85,7 +90,20 @@ export function renderChart(chart, frame, st, { editing = false, compact = false
       ? `<span class="kb">Tom ${esc(bKey.name)} (${describeInterval((b.key.minor ? b.key.tonic.pc + 3 : b.key.tonic.pc) - (chart.key.minor ? chart.key.tonic.pc + 3 : chart.key.tonic.pc))})</span>`
       : '';
     const groups = b.groups.map((g, gi) => {
-      const rows = g.rows.map((r, ri) => renderRow(b, r, gi, ri, frame, st, chart.beatsPerBar, g.repeat > 1 && ri === g.rows.length - 1 ? g.repeat : 0, dense)).join('');
+      const rowsHtml = g.rows.map((r, ri) => renderRow(b, r, gi, ri, frame, st, chart.beatsPerBar, g.repeat > 1 && ri === g.rows.length - 1 ? g.repeat : 0, dense));
+      let rows;
+      if (dense) {
+        // compacto: cada estrofe da cifra (linhas separadas por linha em branco) começa numa linha nova;
+        // dentro da estrofe as linhas seguem lado a lado e só quebram se não couberem
+        const lines = [];
+        let cur = null;
+        let para;
+        g.rows.forEach((r, ri) => {
+          if (!cur || r.para !== para) { cur = []; lines.push(cur); para = r.para; }
+          cur.push(rowsHtml[ri]);
+        });
+        rows = lines.map((l) => `<div class="dline">${l.join('')}</div>`).join('');
+      } else rows = rowsHtml.join('');
       return g.repeat > 1 ? `<div class="group rep" title="Repetir este trecho ${g.repeat} vezes">${rows}</div>` : `<div class="group">${rows}</div>`;
     }).join('');
     return `<section class="block k-${kind}" data-block="${b.id}"><header>${esc(b.names.join(' · '))}${keyBadge}</header>${groups}</section>`;
@@ -119,21 +137,48 @@ function renderRow(block, row, gi, ri, frame, st, bpb, groupRepeat = 0, dense = 
   return `<div class="row">${cue}<div class="line">${bars}${rpt}</div></div>`;
 }
 
-/** Largura mínima (em "em") de uma coluna do mapa para não quebrar linhas de até 4 compassos. */
+/**
+ * Largura mínima (em "em") de uma coluna do mapa.
+ * - detalhado: linhas de até 4 compassos sem quebrar;
+ * - compacto: cada estrofe inteira (até 8 compassos) numa linha só.
+ */
 export function chartMinColEm(chart, dense = false) {
-  let maxBars = 1;
-  let hasRpt = false;
-  for (const b of chart.blocks) {
-    for (const g of b.groups) {
-      if (g.repeat > 1) hasRpt = true;
-      for (const r of g.rows) {
-        const bars = r.bars.reduce((a, bar) => a + (bar.partial ? Math.max(0.25, bar.beats / chart.beatsPerBar) : 1), 0);
-        maxBars = Math.max(maxBars, Math.min(4, bars));
-        if (r.repeat > 1) hasRpt = true;
+  const bpb = chart.beatsPerBar;
+  if (!dense) {
+    let maxBars = 1;
+    let hasRpt = false;
+    for (const b of chart.blocks) {
+      for (const g of b.groups) {
+        if (g.repeat > 1) hasRpt = true;
+        for (const r of g.rows) {
+          const bars = r.bars.reduce((a, bar) => a + (bar.partial ? Math.max(0.25, bar.beats / bpb) : 1), 0);
+          maxBars = Math.max(maxBars, Math.min(4, bars));
+          if (r.repeat > 1) hasRpt = true;
+        }
       }
     }
+    return maxBars * 3.8 + 1.3 + (hasRpt ? 2.2 : 0);
   }
-  return maxBars * (dense ? 3 : 3.8) + 1.3 + (hasRpt ? 2.2 : 0);
+  // compacto: estima a largura de cada compasso pelo que está escrito nele (meio compasso com
+  // dois acordes precisa de mais espaço que 3,3em) e soma a estrofe
+  const itemEm = (ev) => Math.max(1.0, degreeLabel(ev.deg).length * 0.72) + 0.5;
+  const barEm = (bar) => Math.max(3.3 * (bar.partial ? Math.max(0.25, bar.beats / bpb) : 1), bar.items.reduce((a, it) => a + itemEm(it.ev), 0)) + 0.1;
+  const MAX_RUN = 8 * 3.5 + 4;
+  let maxW = 3.5;
+  for (const b of chart.blocks) {
+    for (const g of b.groups) {
+      let run = 0;
+      let para;
+      g.rows.forEach((r, ri) => {
+        if (ri && r.para !== para) { maxW = Math.max(maxW, run); run = 0; }
+        para = r.para;
+        const w = r.bars.reduce((a, bar) => a + barEm(bar), 0) + (r.repeat > 1 ? 1.8 : 0) + (g.repeat > 1 && ri === g.rows.length - 1 ? 2.8 : 0);
+        run = Math.min(MAX_RUN, run + (run ? 0.6 : 0) + w);
+      });
+      maxW = Math.max(maxW, run);
+    }
+  }
+  return maxW + 1.3;
 }
 
 /** Índice de eventos por id (para editar tempos ao tocar no acorde). */

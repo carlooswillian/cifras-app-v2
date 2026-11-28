@@ -294,3 +294,18 @@ test('mesmos acordes com nomes diferentes e repetições diferentes: um bloco, �
   // o bloco mostra a parte uma vez (as vezes ficam nos chips)
   assert.equal(refrao[0].groups[0].rows[0].repeat, 1);
 });
+
+import { renderChart } from '../public/js/ui/render.js';
+import { viewFrame as vf } from '../public/js/music/transition.js';
+
+test('compacto: cada estrofe (separada por linha em branco) começa numa linha nova', () => {
+  const src = '[Refrão]\nC   D\nlinha a\nEm\nlinha b\n\nC   D\nlinha c\nG\nlinha d';
+  const c = buildChart(src);
+  const st = { density: 'compact', medleyDensity: 'compact', showForm: true, showField: false, degreeStyle: 'numbers', minorMode: 'relative', chordStyle: 'simple' };
+  const html = renderChart(c, vf(c), st, { compact: true });
+  assert.equal((html.match(/class="dline"/g) || []).length, 2);
+  // sem a ordem da música quando escondida
+  const clean = renderChart(c, vf(c), { ...st, showForm: false }, { compact: true });
+  assert.ok(!clean.includes('formstrip'));
+  assert.ok(html.includes('formstrip'));
+});

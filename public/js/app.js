@@ -12,7 +12,7 @@ import { Player, tapTempo } from './ui/player.js';
 import { $, $$, esc, toast, modal, confirmBox, popover, uid, debounce, download } from './ui/dom.js';
 import { fetchOldSongs, convertOldSong, OLD_API_URL } from './legacy.js';
 
-export const VERSION = '3.2.0';
+export const VERSION = '3.3.0';
 const main = $('#main');
 let cleanups = [];
 const onLeave = (fn) => cleanups.push(fn);
@@ -376,23 +376,42 @@ function rhythmPopover(anchor, hit, song, chart, apply) {
   });
 }
 
-function displayOptions(anchor, onChange) {
+// O que some com "Tela limpa" (fica só o mapa com os graus)
+const CLEAN_KEYS = ['showForm', 'showVirada', 'showField', 'showControls', 'showCues'];
+
+function displayOptions(anchor, onChange, { medley = false } = {}) {
   const st = settings();
   const seg = (name, opts) => `<div class="segctl" data-set="${name}">${opts.map(([v, l]) => `<button data-v="${v}" class="${st[name] === v ? 'on' : ''}">${l}</button>`).join('')}</div>`;
   const sw = (name, label) => `<div class="opt"><span>${label}</span><button class="switch ${st[name] ? 'on' : ''}" data-sw="${name}" aria-label="${label}"></button></div>`;
-  popover(anchor, `<h4>Exibição</h4>
+  popover(anchor, `<h4>Mostrar na tela</h4>
+    <div class="pfoot" style="margin:0 0 4px"><button class="btn sm" data-clean="off">🧹 Tela limpa</button><button class="btn sm" data-clean="on">Mostrar tudo</button></div>
+    ${sw('showForm', 'Ordem da música (Intro › Refrão…)')}
+    ${medley ? sw('showVirada', 'Virada entre as músicas') : ''}
+    ${sw('showField', 'Campo harmônico')}
+    ${sw('showNames', 'Nome do acorde embaixo do grau')}
+    ${sw('showBeats', 'Bolinhas de tempo')}
+    ${medley ? sw('showControls', 'Controles (tom, capo, partes)') : sw('showCues', 'Início da letra no mapa')}
+    <h4 style="margin-top:10px">Estilo</h4>
     <div style="display:flex;flex-direction:column;gap:8px">
       ${seg('primary', [['degrees', 'Graus em destaque'], ['names', 'Acordes em destaque']])}
       ${seg('degreeStyle', [['numbers', '1 4 5 6m'], ['roman', 'I IV V VIm']])}
-      ${seg('lyricChords', [['both', 'Letra: ambos'], ['names', 'nomes'], ['degrees', 'graus']])}
       ${seg('chordStyle', [['simple', 'Acorde básico'], ['original', 'Como escrito']])}
-      ${seg('density', [['normal', 'Mapa detalhado'], ['compact', 'Mapa compacto']])}
+      ${medley ? '' : seg('density', [['normal', 'Mapa detalhado'], ['compact', 'Mapa compacto']])}
+      ${seg('lyricChords', [['both', 'Letra: ambos'], ['names', 'nomes'], ['degrees', 'graus']])}
     </div>
-    ${sw('showBass', 'Mostrar baixo (D/F#)')}${sw('showCues', 'Início da letra no mapa')}${sw('showField', 'Campo harmônico')}${sw('colorDegrees', 'Cores por grau')}${sw('showTabs', 'Tablaturas na letra')}
+    ${sw('showBass', 'Mostrar baixo (D/F#)')}${sw('colorDegrees', 'Cores por grau')}${sw('showTabs', 'Tablaturas na letra')}
     <div class="opt"><span>Tom menor</span>${seg('minorMode', [['relative', 'Em = 6m'], ['tonic', 'Em = 1m']])}</div>`,
   (pop) => {
     pop.querySelectorAll('[data-set] button').forEach((b) => { b.onclick = () => { const k = b.closest('[data-set]').dataset.set; setSetting(k, b.dataset.v); b.parentElement.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b)); onChange(); }; });
     pop.querySelectorAll('[data-sw]').forEach((b) => { b.onclick = () => { const k = b.dataset.sw; setSetting(k, !settings()[k]); b.classList.toggle('on', settings()[k]); onChange(); }; });
+    pop.querySelectorAll('[data-clean]').forEach((b) => {
+      b.onclick = () => {
+        const on = b.dataset.clean === 'on';
+        for (const k of CLEAN_KEYS) setSetting(k, on);
+        pop.querySelectorAll('[data-sw]').forEach((x) => x.classList.toggle('on', !!settings()[x.dataset.sw]));
+        onChange();
+      };
+    });
   });
 }
 
@@ -565,37 +584,38 @@ function medleyScreen(id) {
     const frames = list.map(({ it, song }, k) => viewFrame(charts[k], { transpose: it.transpose || 0, capo: it.capo }));
     // a virada usa só as partes escolhidas (fim da última parte de A -> começo da primeira parte de B)
     const edgeCharts = list.map(({ it }, k) => ({ ...charts[k], ...partsEdges(charts[k], it.parts) }));
+    const controls = st.showControls !== false;
     const cols = list.map(({ it, i, song }, k) => {
       const chart = charts[k], frame = frames[k];
-      const next = k + 1 < list.length ? k + 1 : -1;
-      const editing = partsEdit.has(i);
+      const editing = controls && partsEdit.has(i);
       const nParts = it.parts ? validParts(chart, it.parts) : null;
+      // virada: no topo da música que entra ("vindo de ..."), e pode ser escondida
       let vir = '';
-      if (next >= 0) {
-        const h = transitionHint(edgeCharts[k], frame, edgeCharts[next], frames[next], st);
-        if (h) vir = `<div class="virada"><div class="vt">➜ ${esc(list[next].song.title)}: ${esc(h.title)}</div><div class="chain">${h.chain.map((c, ci) => `${ci ? '<span>→</span>' : ''}<b>${esc(c)}</b>`).join('')}<span class="vd">${esc(h.detail)}</span></div>${h.capoNote ? `<div class="vd">${esc(h.capoNote)}</div>` : ''}</div>`;
+      if (k > 0 && st.showVirada !== false) {
+        const h = transitionHint(edgeCharts[k - 1], frames[k - 1], edgeCharts[k], frame, st);
+        if (h) vir = `<div class="virada"><div class="vt">⬅ Vindo de ${esc(list[k - 1].song.title)}: ${esc(h.title)}</div><div class="chain">${h.chain.map((c, ci) => `${ci ? '<span>→</span>' : ''}<b>${esc(c)}</b>`).join('')}<span class="vd">${esc(h.detail)}</span></div>${h.capoNote ? `<div class="vd">${esc(h.capoNote)}</div>` : ''}</div>`;
       }
       return `<div class="mcol" data-i="${i}">
         <div class="mcol-head">
-          <div class="mh1"><span class="num">${k + 1}</span><a class="ttl" href="#/s/${encodeURIComponent(song.id)}" style="color:inherit;text-decoration:none">${esc(song.title)}</a><button class="btn sm icon ghost" data-rm="${i}" title="Tirar do medley">✕</button></div>
-          <div class="ctl">
+          <div class="mh1"><span class="num">${k + 1}</span><a class="ttl" href="#/s/${encodeURIComponent(song.id)}" style="color:inherit;text-decoration:none">${esc(song.title)}</a>${controls ? `<button class="btn sm icon ghost" data-rm="${i}" title="Tirar do medley">✕</button>` : `<span class="chip">${esc(frame.soundingKey.name)}${frame.capo ? ' · capo ' + frame.capo : ''}</span>`}</div>
+          ${controls ? `<div class="ctl">
             <div class="stepper"><button data-mt="${i}" data-d="-1">−</button><span class="val">${esc(frame.soundingKey.name)}<small>tom</small></span><button data-mt="${i}" data-d="1">＋</button></div>
             <div class="stepper"><button data-mc="${i}" data-d="-1">−</button><span class="val">${frame.capo ? frame.capo + 'ª' : 'sem'}<small>capo${frame.capo ? ' · ' + esc(frame.shapesKey.name) : ''}</small></span><button data-mc="${i}" data-d="1">＋</button></div>
             <button class="btn sm ${editing ? 'on' : ''}" data-parts="${i}" title="Escolher quais partes desta música entram no medley">✂ Partes</button>
             ${nParts && !editing ? `<span class="pcount">${nParts.length} de ${chart.form.length} partes</span>` : ''}
             ${song.bpm ? `<span class="chip">${song.bpm} bpm</span>` : ''}
-          </div>
+          </div>` : ''}
           ${editing ? `<div class="partsbar">Toque nas partes que entram no medley <button class="btn sm" data-pall="${i}">Todas</button><button class="btn sm primary" data-pdone="${i}">Pronto</button></div>` : ''}
         </div>
-        <div class="mcol-body">${mode === 'chart' ? renderChart(chart, frame, st, { compact: true, parts: it.parts, partsEdit: editing }) : renderLyrics(chart, frame, st, { parts: it.parts })}</div>
         ${vir}
+        <div class="mcol-body">${mode === 'chart' ? renderChart(chart, frame, st, { compact: true, parts: it.parts, partsEdit: editing }) : renderLyrics(chart, frame, st, { parts: it.parts })}</div>
       </div>`;
     }).join('');
     const n = Math.max(1, list.length);
     main.innerHTML = `<div class="stage-wrap">
-      <div class="stagebar"><div class="segctl"><button data-mode="chart" class="${mode === 'chart' ? 'on' : ''}">Mapa</button><button data-mode="lyrics" class="${mode === 'lyrics' ? 'on' : ''}">Letra</button></div>
+      ${controls ? `<div class="stagebar"><div class="segctl"><button data-mode="chart" class="${mode === 'chart' ? 'on' : ''}">Mapa</button><button data-mode="lyrics" class="${mode === 'lyrics' ? 'on' : ''}">Letra</button></div>
       ${mode === 'chart' ? `<div class="segctl" title="Compacto: as linhas de cada parte ficam lado a lado, sem o início da letra"><button data-dens="compact" class="${st.medleyDensity === 'compact' ? 'on' : ''}">Compacto</button><button data-dens="normal" class="${st.medleyDensity !== 'compact' ? 'on' : ''}">Detalhado</button></div>` : ''}
-      <span class="grow"></span><button class="btn sm" id="mAdd">＋ Música</button></div>
+      <span class="grow"></span><button class="btn sm" id="mAdd">＋ Música</button></div>` : ''}
       <div class="stage-body"><div class="medley" style="--mcol-w:${Math.max(280, Math.floor((main.clientWidth || window.innerWidth) / Math.min(n, 4)) - 1)}px">${cols || '<div class="empty" style="margin:auto">Medley vazio. Toque em "+ Música".</div>'}</div></div>
     </div>`;
     bind();
@@ -606,9 +626,10 @@ function medleyScreen(id) {
     const dense = settings().medleyDensity === 'compact';
     $$('.mcol-body > .chart, .mcol-body > .lyrics').forEach((el) => {
       const chart = chartById.get(el.closest('.mcol').dataset.i) || { blocks: [], beatsPerBar: 4 };
+      // nunca encolhe abaixo de uma letra legível: se a música não couber, a coluna rola para baixo
       fitToBox(el, mode === 'chart'
-        ? { min: 12, max: 34, colSel: '.blocks', maxCols: 2, minColPx: 170, minColEm: chartMinColEm(chart, dense) }
-        : { min: 12, max: 26, maxCols: 1 });
+        ? { min: 16, max: 34, colSel: '.blocks', maxCols: 2, minColPx: 170, minColEm: chartMinColEm(chart, dense), scrollCols: 1 }
+        : { min: 15, max: 26, maxCols: 1, scrollCols: 1 });
     });
   };
 
@@ -649,7 +670,8 @@ function medleyScreen(id) {
       };
     });
     $$('[data-rm]').forEach((b) => { b.onclick = async () => { medley.items.splice(Number(b.dataset.rm), 1); await save(); draw(); }; });
-    $('#mAdd').onclick = () => pickSongs({ title: 'Adicionar músicas', onDone: async (ids) => { medley.items.push(...ids.map((songId) => ({ songId }))); await save(); draw(); } });
+    const addBtn = $('#mAdd'); // some junto com os controles na "Tela limpa"
+    if (addBtn) addBtn.onclick = () => pickSongs({ title: 'Adicionar músicas', onDone: async (ids) => { medley.items.push(...ids.map((songId) => ({ songId }))); await save(); draw(); } });
     $('#mList').onclick = () => editMedleyList(medley, async () => { await save(); draw(); });
     $('#mMatch').onclick = async () => {
       const list = items();
@@ -663,7 +685,7 @@ function medleyScreen(id) {
       await save(); draw();
       toast('Todas no campo harmônico de ' + f0.soundingKey.name, 'ok');
     };
-    $('#mDisp').onclick = () => displayOptions($('#mDisp'), () => draw());
+    $('#mDisp').onclick = () => displayOptions($('#mDisp'), () => draw(), { medley: true });
     $('#mFs').onclick = toggleFullscreen;
     $('#mname').onclick = async () => {
       const v = await modal({ title: 'Nome do medley', body: `<input type="text" id="nm" value="${esc(medley.name)}">`, buttons: [{ label: 'Excluir medley', cls: 'danger', value: 'del' }, { label: 'Cancelar', value: null }, { label: 'Salvar', cls: 'primary', handler: (dlg) => dlg.querySelector('#nm').value }] });
@@ -723,6 +745,11 @@ function settingsView() {
       <div class="opt"><span class="ol">Partes repetidas<small>Refrão, 1ª Parte… com o mesmo nome aparecem uma vez só; "≈" na ordem da música marca a vez que tem alguma diferença</small></span>${seg('mergeSameName', [[true, 'Uma vez só'], [false, 'Cada vez']])}</div>
       ${sw('showBass', 'Mostrar baixo invertido', 'Ex.: D/F# em vez de D')}
       ${sw('showCues', 'Início da letra no mapa')}
+      ${sw('showForm', 'Ordem da música em cima do mapa', 'Os chips Intro › 1ª Parte › Refrão…')}
+      ${sw('showVirada', 'Virada entre as músicas do medley', 'Aparece no topo da música seguinte')}
+      ${sw('showControls', 'Controles no medley', 'Tom, capo, partes e a barra Mapa/Letra')}
+      ${sw('showNames', 'Nome do acorde embaixo do grau')}
+      ${sw('showBeats', 'Bolinhas de tempo')}
       ${sw('showField', 'Faixa do campo harmônico')}
       ${sw('colorDegrees', 'Cores por grau')}
       ${sw('showTabs', 'Mostrar tablaturas na letra')}

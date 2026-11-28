@@ -35,6 +35,13 @@ O levantamento completo da versão antiga (problemas encontrados e o que mudou) 
      As outras somem da tela, a letra cresce, e a dica de virada passa a usar o fim da última parte
      escolhida e o começo da primeira parte da próxima música.
    - O modo compacto também pode ser usado numa música sozinha (**Aa** → Mapa compacto, ou em Ajustes).
+   - No compacto, cada estrofe da cifra (linhas separadas por uma linha em branco) fica numa linha;
+     nenhum acorde fica espremido em cima do outro. Se a música não couber com uma letra legível,
+     aquela coluna rola para baixo.
+   - A dica de virada aparece no topo da música seguinte ("Vindo de…").
+   - **Aa → Mostrar na tela**: ligue/desligue a ordem da música, a virada, o campo harmônico, o nome do
+     acorde, as bolinhas de tempo e os controles. **🧹 Tela limpa** deixa só o mapa com os graus;
+     **Mostrar tudo** volta.
 
 ### Como escrever tempos e repetições (opcional)
 
